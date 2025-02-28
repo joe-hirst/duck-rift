@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { Duck } from '../objects/Duck';
-import { Obstacle } from '../objects/Obstacle';
-import { GAME_WIDTH, GAME_HEIGHT } from '../config';
+import { Obstacle, ObstacleType } from '../objects/Obstacle';
+import { GAME_WIDTH, GAME_HEIGHT, GAME_SPEED } from '../config';
 
 export class GameScene extends Phaser.Scene {
   private duck!: Duck;
@@ -13,15 +13,14 @@ export class GameScene extends Phaser.Scene {
   private riverSpeed: number = 2;
   private riverBackground!: Phaser.GameObjects.TileSprite;
   private difficultyTimer!: Phaser.Time.TimerEvent;
+  private difficultyLevel: number = 1;
+  private riverBanks!: {left: Phaser.GameObjects.Rectangle, right: Phaser.GameObjects.Rectangle};
   
   constructor() {
     super('GameScene');
   }
 
   preload() {
-    // The duck and obstacle classes will handle their own preloading
-    // We'll need to add actual assets later
-    
     // Create temporary graphics for the repeating river texture
     const graphics = this.add.graphics();
     graphics.fillStyle(0x4488cc, 1); // Blue color for water
@@ -41,6 +40,11 @@ export class GameScene extends Phaser.Scene {
     
     graphics.generateTexture('river', 64, 64);
     graphics.clear();
+    
+    // Preload obstacle assets
+    Obstacle.preloadAssets(this);
+    
+    // Duck will handle its own preloading
   }
 
   create() {
@@ -53,9 +57,51 @@ export class GameScene extends Phaser.Scene {
       'river'
     );
     
+    // Create river banks
+    const bankWidth = 40;
+    const bankColor = 0x228833; // Green color for banks
+    
+    // Left bank
+    const leftBank = this.add.rectangle(
+      bankWidth / 2,
+      GAME_HEIGHT / 2,
+      bankWidth,
+      GAME_HEIGHT,
+      bankColor
+    );
+    
+    // Right bank
+    const rightBank = this.add.rectangle(
+      GAME_WIDTH - bankWidth / 2,
+      GAME_HEIGHT / 2,
+      bankWidth,
+      GAME_HEIGHT,
+      bankColor
+    );
+    
+    this.riverBanks = { left: leftBank, right: rightBank };
+    
+    // Add some details to the banks
+    const bankDetail = this.add.graphics();
+    bankDetail.fillStyle(0x115522, 0.5); // Darker green for grass/plants
+    
+    // Add random grass/plants to the banks
+    for (let i = 0; i < 20; i++) {
+      const x1 = Phaser.Math.Between(5, bankWidth - 5);
+      const y1 = Phaser.Math.Between(5, GAME_HEIGHT - 5);
+      bankDetail.fillCircle(x1, y1, 5);
+      
+      const x2 = GAME_WIDTH - Phaser.Math.Between(5, bankWidth - 5);
+      const y2 = Phaser.Math.Between(5, GAME_HEIGHT - 5);
+      bankDetail.fillCircle(x2, y2, 5);
+    }
+    
     // Create duck/raft
     this.duck = new Duck(this, GAME_WIDTH / 2, GAME_HEIGHT - 50);
     this.duck.create();
+    
+    // Set the duck's river bounds based on the bank width
+    this.duck.setRiverBounds(this.riverBanks.left.width, GAME_WIDTH - this.riverBanks.right.width);
     
     // Create obstacle group
     this.obstacles = this.physics.add.group({
@@ -75,7 +121,9 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(
       this.duck,
       this.obstacles,
-      this.handleCollision,
+      (duck, obstacle) => {
+        this.handleCollision(duck as Duck, obstacle as Obstacle);
+      },
       undefined,
       this
     );
@@ -105,7 +153,9 @@ export class GameScene extends Phaser.Scene {
       delay: 10000, // Increase difficulty every 10 seconds
       callback: () => {
         if (!this.gameOver) {
+          this.difficultyLevel++;
           this.riverSpeed += 0.2;
+          
           // Create a new timer with updated delay
           const currentDelay = this.obstacleTimer.delay;
           const newDelay = Math.max(300, currentDelay - 50);
@@ -116,6 +166,33 @@ export class GameScene extends Phaser.Scene {
             callback: this.spawnObstacle,
             callbackScope: this,
             loop: true
+          });
+          
+          // Show level up text
+          const levelText = this.add.text(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            `LEVEL ${this.difficultyLevel}`,
+            {
+              fontSize: '48px',
+              color: '#ffff00',
+              stroke: '#000',
+              strokeThickness: 5
+            }
+          );
+          levelText.setOrigin(0.5);
+          levelText.setAlpha(0.8);
+          
+          // Add a fade out animation
+          this.tweens.add({
+            targets: levelText,
+            alpha: 0,
+            y: GAME_HEIGHT / 2 - 50,
+            duration: 1500,
+            ease: 'Cubic.easeOut',
+            onComplete: () => {
+              levelText.destroy();
+            }
           });
         }
       },
@@ -136,15 +213,59 @@ export class GameScene extends Phaser.Scene {
   private spawnObstacle() {
     if (this.gameOver) return;
     
-    // Create a new obstacle at a random x position
-    const x = Phaser.Math.Between(40, GAME_WIDTH - 40);
-    const obstacle = new Obstacle(this, x);
+    // Determine the riverbed width (area between banks)
+    const riverBedWidth = GAME_WIDTH - (this.riverBanks.left.width + this.riverBanks.right.width);
+    const leftEdge = this.riverBanks.left.width;
+    
+    // Create a new obstacle at a random x position within the riverbed
+    const x = Phaser.Math.Between(leftEdge + 30, leftEdge + riverBedWidth - 30);
+    
+    // Determine obstacle type (rock or log)
+    // Higher chance of logs at higher difficulty levels
+    const logChance = Math.min(0.4, 0.1 + (this.difficultyLevel * 0.05));
+    const type = Math.random() < logChance ? ObstacleType.LOG : ObstacleType.ROCK;
+    
+    // Create the obstacle
+    const obstacle = new Obstacle(this, x, type);
     obstacle.create();
     
+    // Adjust velocity based on type and difficulty
+    if (type === ObstacleType.LOG) {
+      // Logs move faster
+      obstacle.setVelocityY(GAME_SPEED + 50);
+      
+      // Add some lateral movement to logs to make them more challenging
+      if (this.difficultyLevel >= 3) {
+        const sideMovement = Phaser.Math.Between(-50, 50);
+        obstacle.setVelocityX(sideMovement);
+      }
+    } else {
+      // Rocks move at normal speed
+      obstacle.setVelocityY(GAME_SPEED);
+    }
+    
     this.obstacles.add(obstacle);
+    
+    // At higher difficulty levels, spawn obstacles in groups sometimes
+    if (this.difficultyLevel >= 2 && Math.random() < 0.3) {
+      const obstacleCount = Phaser.Math.Between(1, this.difficultyLevel - 1);
+      for (let i = 0; i < obstacleCount; i++) {
+        // Add a small delay between spawns
+        this.time.delayedCall(Phaser.Math.Between(100, 300), () => {
+          if (this.gameOver) return;
+          
+          const offsetX = Phaser.Math.Between(leftEdge + 30, leftEdge + riverBedWidth - 30);
+          const offsetType = Math.random() < 0.3 ? ObstacleType.LOG : ObstacleType.ROCK;
+          
+          const additionalObstacle = new Obstacle(this, offsetX, offsetType);
+          additionalObstacle.create();
+          this.obstacles.add(additionalObstacle);
+        });
+      }
+    }
   }
 
-  private handleCollision() {
+  private handleCollision(duck: Duck, obstacle: Obstacle) {
     if (this.gameOver) return;
     
     this.gameOver = true;
@@ -153,9 +274,10 @@ export class GameScene extends Phaser.Scene {
     this.obstacleTimer.remove();
     this.difficultyTimer.remove();
     this.obstacles.setVelocityY(0);
+    this.obstacles.setVelocityX(0);
     
     // Stop the duck
-    this.duck.setVelocity(0, 0);
+    duck.setVelocity(0, 0);
     
     // Show game over text
     const gameOverText = this.add.text(
@@ -171,13 +293,27 @@ export class GameScene extends Phaser.Scene {
     );
     gameOverText.setOrigin(0.5);
     
+    // Show score
+    const finalScoreText = this.add.text(
+      GAME_WIDTH / 2,
+      GAME_HEIGHT / 2 + 50,
+      `Final Score: ${this.score}`,
+      {
+        fontSize: '32px',
+        color: '#ffffff',
+        stroke: '#000',
+        strokeThickness: 4
+      }
+    );
+    finalScoreText.setOrigin(0.5);
+    
     // Show retry text
     const retryText = this.add.text(
       GAME_WIDTH / 2,
-      GAME_HEIGHT / 2 + 80,
+      GAME_HEIGHT / 2 + 100,
       'Press SPACE to retry',
       {
-        fontSize: '32px',
+        fontSize: '24px',
         color: '#ffffff',
         stroke: '#000',
         strokeThickness: 4

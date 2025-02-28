@@ -53,4 +53,4 @@ Placeholder graphics currently used. Art assets will be added in future updates.
 
 ## License
 
-ISC
+MIT

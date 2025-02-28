@@ -1,10 +1,19 @@
 import Phaser from 'phaser';
 import { GAME_HEIGHT, GAME_SPEED } from '../config';
 
+export enum ObstacleType {
+  ROCK = 'rock',
+  LOG = 'log'
+}
+
 export class Obstacle extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene: Phaser.Scene, x: number) {
-    // For now, create a simple gray rectangle as a placeholder for the rocks
+  private obstacleType: ObstacleType;
+  
+  constructor(scene: Phaser.Scene, x: number, type: ObstacleType = ObstacleType.ROCK) {
+    // We'll start with a placeholder texture and update it in create()
     super(scene, x, 0, 'obstacle');
+    
+    this.obstacleType = type;
     
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -14,29 +23,59 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
     
     // Set velocity to move downwards
     this.setVelocityY(GAME_SPEED);
-    
-    // We'll handle the destruction manually in update
   }
 
-  preload() {
-    // We'll add real assets later, for now create a placeholder
-    this.scene.load.image('obstacle', '');
+  static preloadAssets(scene: Phaser.Scene) {
+    // We'll add real assets later, for now create placeholders
+    
+    // Create rock placeholder
+    const rockGraphics = scene.add.graphics();
+    rockGraphics.fillStyle(0x888888, 1); // Gray color for rocks
+    rockGraphics.fillRect(0, 0, 60, 50);
+    // Add some texture to the rock
+    rockGraphics.lineStyle(1, 0x666666, 1);
+    rockGraphics.strokeCircle(15, 15, 10);
+    rockGraphics.strokeCircle(40, 30, 12);
+    rockGraphics.generateTexture('rock', 60, 50);
+    rockGraphics.clear();
+    
+    // Create log placeholder
+    const logGraphics = scene.add.graphics();
+    logGraphics.fillStyle(0x8B4513, 1); // Brown color for logs
+    logGraphics.fillRect(0, 0, 100, 30);
+    // Add some wood grain texture
+    logGraphics.lineStyle(1, 0x5C3317, 0.8);
+    for (let i = 0; i < 100; i += 10) {
+      logGraphics.beginPath();
+      logGraphics.moveTo(i, 0);
+      logGraphics.lineTo(i, 30);
+      logGraphics.stroke();
+    }
+    logGraphics.generateTexture('log', 100, 30);
+    logGraphics.clear();
   }
 
   create() {
-    // Create a placeholder graphic for the obstacle
-    const width = Phaser.Math.Between(40, 80);
-    const height = Phaser.Math.Between(40, 80);
+    // Set texture and size based on obstacle type
+    if (this.obstacleType === ObstacleType.ROCK) {
+      this.setTexture('rock');
+      if (this.body) {
+        this.body.setSize(50, 40);
+      }
+      // Add some random rotation to the rock
+      this.setRotation(Phaser.Math.FloatBetween(0, Math.PI));
+    } else if (this.obstacleType === ObstacleType.LOG) {
+      this.setTexture('log');
+      if (this.body) {
+        this.body.setSize(90, 20);
+      }
+      // Logs might be slightly rotated in the water
+      this.setRotation(Phaser.Math.FloatBetween(-0.2, 0.2));
+    }
     
-    const graphics = this.scene.add.graphics();
-    graphics.fillStyle(0x888888, 1); // Gray color
-    graphics.fillRect(0, 0, width, height);
-    graphics.generateTexture('obstacle', width, height);
-    graphics.clear();
-    
-    this.setTexture('obstacle');
-    if (this.body) {
-      this.body.setSize(width, height);
+    // Add a little physics drag to make movement more natural
+    if (this.body && this.body instanceof Phaser.Physics.Arcade.Body) {
+      this.body.setDrag(50, 0);
     }
   }
 
@@ -45,5 +84,14 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
     if (this.y > GAME_HEIGHT + this.height) {
       this.destroy();
     }
+    
+    // Make logs sway slightly in the water
+    if (this.obstacleType === ObstacleType.LOG) {
+      this.rotation += Math.sin(this.y * 0.01) * 0.001;
+    }
+  }
+  
+  getType(): ObstacleType {
+    return this.obstacleType;
   }
 }

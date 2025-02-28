@@ -21,8 +21,7 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
     // Set the initial position off-screen at the top
     this.setPosition(x, -50);
     
-    // Set velocity to move downwards
-    this.setVelocityY(GAME_SPEED);
+    // Velocity will be set in the GameScene
   }
 
   static preloadAssets(scene: Phaser.Scene) {
@@ -72,6 +71,10 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
       // Logs might be slightly rotated in the water
       this.setRotation(Phaser.Math.FloatBetween(-0.2, 0.2));
     }
+    
+    // Set obstacle to active to ensure physics are applied
+    this.setActive(true);
+    this.setVisible(true);
     
     // Add a little physics drag to make movement more natural
     if (this.body && this.body instanceof Phaser.Physics.Arcade.Body) {

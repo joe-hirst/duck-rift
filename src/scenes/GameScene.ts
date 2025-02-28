@@ -259,6 +259,17 @@ export class GameScene extends Phaser.Scene {
           
           const additionalObstacle = new Obstacle(this, offsetX, offsetType);
           additionalObstacle.create();
+          
+          // Set velocity based on obstacle type
+          if (offsetType === ObstacleType.LOG) {
+            additionalObstacle.setVelocityY(GAME_SPEED + 50);
+            if (this.difficultyLevel >= 3) {
+              additionalObstacle.setVelocityX(Phaser.Math.Between(-50, 50));
+            }
+          } else {
+            additionalObstacle.setVelocityY(GAME_SPEED);
+          }
+          
           this.obstacles.add(additionalObstacle);
         });
       }

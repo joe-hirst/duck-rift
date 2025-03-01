@@ -7,11 +7,13 @@ import { ObstacleManager } from "../managers/ObstacleManager";
 import { PauseManager } from "../managers/PauseManager";
 import { ScoreManager } from "../managers/ScoreManager";
 import { GameOverManager } from "../managers/GameOverManager";
+import { CoinManager } from "../managers/CoinManager";
 
 export class GameScene extends Phaser.Scene {
   private duck!: Duck;
   private riverManager!: RiverManager;
   private obstacleManager!: ObstacleManager;
+  private coinManager!: CoinManager;
   private pauseManager!: PauseManager;
   private scoreManager!: ScoreManager;
   private gameOverManager!: GameOverManager;
@@ -35,6 +37,12 @@ export class GameScene extends Phaser.Scene {
       this.handleCollision.bind(this)
     );
     this.obstacleManager.preload();
+    
+    this.coinManager = new CoinManager(
+      this,
+      this.collectCoin.bind(this)
+    );
+    this.coinManager.preload();
 
     // Load duck image
     this.load.image("duck", "/assets/duck.png");
@@ -76,11 +84,19 @@ export class GameScene extends Phaser.Scene {
       this.riverManager.getLeftEdge(),
       this.riverManager.getRiverbedWidth()
     );
+    
+    // Create coins and setup collection
+    this.coinManager.create(
+      this.duck,
+      this.riverManager.getLeftEdge(),
+      this.riverManager.getRiverbedWidth()
+    );
 
     // Add timers to pause manager
     this.pauseManager.addTimer(this.scoreManager.getScoreTimer());
     this.pauseManager.addTimer(this.obstacleManager.getObstacleTimer());
     this.pauseManager.addTimer(this.obstacleManager.getDifficultyTimer());
+    this.pauseManager.addTimer(this.coinManager.getCoinTimer());
   }
 
   update() {
@@ -103,12 +119,22 @@ export class GameScene extends Phaser.Scene {
 
     // Update obstacles
     this.obstacleManager.update(this.pauseManager.isPauseActive());
+    
+    // Update coins
+    this.coinManager.update(this.pauseManager.isPauseActive());
+  }
+  
+  private collectCoin(value: number): void {
+    this.scoreManager.incrementCoins(value);
   }
 
   private handleCollision(duck: Duck, obstacle: Obstacle): void {
     if (this.gameOver) return;
 
     this.gameOver = true;
+    
+    // Stop coins and obstacles
+    this.coinManager.setGameOver(true);
 
     // Stop the music
     this.bgMusic.stop();
@@ -119,6 +145,7 @@ export class GameScene extends Phaser.Scene {
     // Show game over screen
     this.gameOverManager.showGameOver(
       this.scoreManager.getScore(),
+      this.scoreManager.getCoins(),
       this.restartGame.bind(this),
       this.goToMainMenu.bind(this)
     );
@@ -130,6 +157,9 @@ export class GameScene extends Phaser.Scene {
 
     // Reset game state
     this.gameOver = false;
+    
+    // Reset coin manager
+    this.coinManager.reset();
 
     // Restart the scene
     this.scene.restart();

@@ -7,7 +7,9 @@
     "copy-assets": "mkdir -p dist/assets && cp -r src/assets/* dist/assets/ && cp src/index.html dist/",
     "start": "pnpm run copy-assets && webpack serve --open",
     "build": "pnpm run copy-assets && webpack --mode production",
-    "dev": "pnpm run copy-assets && webpack --mode development --watch"
+    "dev": "pnpm run copy-assets && webpack --mode development --watch",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "keywords": [
     "game",
@@ -22,8 +24,11 @@
     "phaser": "^3.88.2"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
+    "eslint": "^8.57.1",
     "ts-loader": "^9.5.2",
-    "typescript": "^5.8.2",
+    "typescript": "^5.7.3",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.0"

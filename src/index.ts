@@ -5,7 +5,7 @@ import { GameScene } from './scenes/GameScene';
 
 window.addEventListener('load', () => {
   // Create game instance
-  const game = new Phaser.Game({
+  new Phaser.Game({
     ...GameConfig,
     scene: [MainMenuScene, GameScene]
   });

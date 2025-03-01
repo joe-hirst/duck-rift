@@ -5,6 +5,8 @@
 - `pnpm start`: Copy assets, build, and start dev server with hot reload
 - `pnpm build`: Copy assets and build for production
 - `pnpm dev`: Copy assets and build in dev mode with watch
+- `pnpm lint`: Run ESLint to check for code issues
+- `pnpm lint:fix`: Run ESLint and automatically fix issues
 
 ## Code Style Guidelines
 
@@ -27,4 +29,4 @@
 - `/src/objects`: Game entity classes (Duck, Obstacle)
 - `/src/assets`: Game assets (images, audio)
 
-Always run `pnpm build` to verify the game compiles.
+Always run `pnpm lint` and `pnpm build` to verify the game compiles.

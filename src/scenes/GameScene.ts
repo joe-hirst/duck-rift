@@ -128,7 +128,7 @@ export class GameScene extends Phaser.Scene {
     this.scoreManager.incrementCoins(value);
   }
 
-  private handleCollision(duck: Duck, obstacle: Obstacle): void {
+  private handleCollision(duck: Duck, _obstacle: Obstacle): void {
     if (this.gameOver) return;
 
     this.gameOver = true;

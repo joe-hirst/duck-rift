@@ -21,8 +21,10 @@ export class GameScene extends Phaser.Scene {
   private bgMusic!: Phaser.Sound.BaseSound;
   private isPaused: boolean = false;
   private pauseGroup!: Phaser.GameObjects.Group;
+  private pauseMenuContainer!: Phaser.GameObjects.Container;
   private pauseScoreText!: Phaser.GameObjects.Text;
   private escKey!: Phaser.Input.Keyboard.Key;
+  private mKey!: Phaser.Input.Keyboard.Key;
 
   constructor() {
     super("GameScene");
@@ -67,13 +69,13 @@ export class GameScene extends Phaser.Scene {
     });
     this.bgMusic.play();
     
-    // Setup ESC key for pause
+    // Setup keys for pause menu and main menu
     if (this.input.keyboard) {
       this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+      this.mKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     }
     
-    // Create pause menu group (initially hidden)
-    this.pauseGroup = this.add.group();
+    // Create pause menu (this initializes this.pauseGroup)
     this.createPauseMenu();
 
     // Create the scrolling river background
@@ -238,6 +240,11 @@ export class GameScene extends Phaser.Scene {
       this.togglePause();
     }
     
+    // Check for M key press to go to main menu when paused
+    if (this.isPaused && this.mKey && Phaser.Input.Keyboard.JustDown(this.mKey)) {
+      this.goToMainMenu();
+    }
+    
     if (this.isPaused) return;
 
     // Update the duck/raft
@@ -396,9 +403,24 @@ export class GameScene extends Phaser.Scene {
       }
     );
     retryText.setOrigin(0.5);
+    
+    // Show main menu text
+    const menuText = this.add.text(
+      GAME_WIDTH / 2,
+      GAME_HEIGHT / 2 + 150,
+      "Press M for main menu",
+      {
+        fontSize: "24px",
+        color: "#ffffff",
+        stroke: "#000",
+        strokeThickness: 4,
+      }
+    );
+    menuText.setOrigin(0.5);
 
-    // Add retry input
+    // Add input handlers
     if (this.input && this.input.keyboard) {
+      // Space key for retry
       this.input.keyboard.once("keydown-SPACE", () => {
         // Stop any existing music that might be playing
         this.sound.stopAll();
@@ -409,56 +431,45 @@ export class GameScene extends Phaser.Scene {
         this.difficultyLevel = 1;
         this.scene.restart();
       });
+      
+      // M key for main menu
+      this.input.keyboard.once("keydown-M", () => {
+        this.goToMainMenu();
+      });
     }
   }
 
   private createPauseMenu() {
+    // Create a container for pause menu elements
+    this.pauseMenuContainer = this.add.container(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+    this.pauseMenuContainer.setDepth(1000);
+    
     // Create semi-transparent overlay
     const overlay = this.add.rectangle(
-      GAME_WIDTH / 2,
-      GAME_HEIGHT / 2,
+      0, 0,  // Center of the container
       GAME_WIDTH,
       GAME_HEIGHT,
       0x000000,
       0.7
     );
     
-    // Create pause text
+    // Create pause text - similar to game over text
     const pauseText = this.add.text(
-      GAME_WIDTH / 2,
-      GAME_HEIGHT / 2 - 70,
+      0, -100,  // Relative to container center
       "GAME PAUSED",
       {
         fontSize: "64px",
-        color: "#ffffff",
+        color: "#ff0000",
         stroke: "#000",
         strokeThickness: 6
       }
     );
     pauseText.setOrigin(0.5);
     
-    // Create current score text with initial value
+    // Create current score text with initial value - match final score text style
     this.pauseScoreText = this.add.text(
-      GAME_WIDTH / 2,
-      GAME_HEIGHT / 2,
+      0, -20,  // Relative to container center
       `Score: 0`,
-      {
-        fontSize: "36px",
-        color: "#ffff00",
-        stroke: "#000",
-        strokeThickness: 4
-      }
-    );
-    this.pauseScoreText.setOrigin(0.5);
-    
-    // Add to pause group
-    this.pauseGroup.add(this.pauseScoreText);
-    
-    // Create resume instruction text
-    const resumeText = this.add.text(
-      GAME_WIDTH / 2,
-      GAME_HEIGHT / 2 + 70,
-      "Press ESC to continue",
       {
         fontSize: "32px",
         color: "#ffffff",
@@ -466,47 +477,109 @@ export class GameScene extends Phaser.Scene {
         strokeThickness: 4
       }
     );
-    resumeText.setOrigin(0.5);
-
-    // Add all elements to the pause group
-    this.pauseGroup.add(overlay);
-    this.pauseGroup.add(pauseText);
-    this.pauseGroup.add(resumeText);
+    this.pauseScoreText.setOrigin(0.5);
     
-    // Hide the pause group initially
-    this.pauseGroup.setVisible(false);
+    // Create resume instruction text - match retry text style
+    const resumeText = this.add.text(
+      0, 50,  // Relative to container center
+      "Press ESC to continue",
+      {
+        fontSize: "24px",
+        color: "#ffffff",
+        stroke: "#000",
+        strokeThickness: 4
+      }
+    );
+    resumeText.setOrigin(0.5);
+    
+    // Create main menu instruction text
+    const menuText = this.add.text(
+      0, 100,  // Relative to container center
+      "Press M for main menu",
+      {
+        fontSize: "24px",
+        color: "#ffffff",
+        stroke: "#000",
+        strokeThickness: 4
+      }
+    );
+    menuText.setOrigin(0.5);
+
+    // Add all elements to the container
+    this.pauseMenuContainer.add([overlay, pauseText, this.pauseScoreText, resumeText, menuText]);
+    
+    // Set the pause group to this container
+    this.pauseGroup = this.add.group();
+    this.pauseGroup.add(this.pauseMenuContainer);
+    
+    // Hide the pause menu initially
+    this.pauseMenuContainer.setVisible(false);
   }
   
   private togglePause() {
     this.isPaused = !this.isPaused;
+    console.log(`Game paused: ${this.isPaused}`);
     
-    // Update the score text in the pause menu before showing it
     if (this.isPaused) {
-      this.pauseScoreText.setText(`Score: ${this.score}`);
-    }
-    
-    // Toggle pause menu visibility
-    this.pauseGroup.setVisible(this.isPaused);
-    
-    // Pause/resume game physics
-    if (this.isPaused) {
-      this.physics.pause();
-      // Pause background music
-      if (this.bgMusic.isPlaying) {
-        this.bgMusic.pause();
-      }
-      // Pause all timers
-      this.obstacleTimer.paused = true;
-      this.difficultyTimer.paused = true;
+      this.showPauseMenu();
     } else {
-      this.physics.resume();
-      // Resume background music
-      if (!this.bgMusic.isPlaying) {
-        this.bgMusic.resume();
-      }
-      // Resume all timers
-      this.obstacleTimer.paused = false;
-      this.difficultyTimer.paused = false;
+      this.hidePauseMenu();
     }
+  }
+  
+  private showPauseMenu() {
+    // Update score display
+    console.log(`Updating score: ${this.score}`);
+    this.pauseScoreText.setText(`Score: ${this.score}`);
+    
+    // Show pause menu
+    console.log(`Showing pause menu`);
+    this.pauseMenuContainer.setVisible(true);
+    console.log(`Showing pause container`);
+    
+    // Pause game systems
+    this.physics.pause();
+    
+    // Pause background music
+    if (this.bgMusic.isPlaying) {
+      this.bgMusic.pause();
+    }
+    
+    // Pause all timers
+    this.obstacleTimer.paused = true;
+    this.difficultyTimer.paused = true;
+  }
+  
+  private hidePauseMenu() {
+    // Hide pause menu
+    console.log(`Hiding pause menu`);
+    this.pauseMenuContainer.setVisible(false);
+    
+    // Resume game systems
+    this.physics.resume();
+    
+    // Resume background music
+    if (!this.bgMusic.isPlaying) {
+      this.bgMusic.resume();
+    }
+    
+    // Resume all timers
+    this.obstacleTimer.paused = false;
+    this.difficultyTimer.paused = false;
+  }
+  
+  private goToMainMenu() {
+    // Stop all sounds
+    this.sound.stopAll();
+    
+    // Reset game state
+    this.isPaused = false;
+    this.gameOver = false;
+    this.score = 0;
+    this.riverSpeed = 2;
+    this.difficultyLevel = 1;
+    
+    // Go to main menu
+    this.scene.start("MainMenuScene");
   }
 }

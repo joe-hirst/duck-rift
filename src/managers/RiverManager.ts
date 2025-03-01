@@ -17,11 +17,11 @@ export class RiverManager {
   preload(): void {
     // Create temporary graphics for the repeating river texture
     const graphics = this.scene.add.graphics();
-    graphics.fillStyle(0x4488cc, 1); // Blue color for water
+    graphics.fillStyle(0x5fbedf, 1); // Blue color for water
     graphics.fillRect(0, 0, 64, 64);
 
     // Add some wavy lines for water texture
-    graphics.lineStyle(2, 0x66aaff, 0.5);
+    graphics.lineStyle(2, 0x4488cc, 0.5);
     for (let y = 8; y < 64; y += 16) {
       graphics.beginPath();
       graphics.moveTo(0, y);
@@ -43,12 +43,12 @@ export class RiverManager {
       GAME_HEIGHT / 2,
       GAME_WIDTH,
       GAME_HEIGHT,
-      "river",
+      "river"
     );
 
     // Create river banks
     const bankWidth = 40;
-    const bankColor = 0x228833; // Green color for banks
+    const bankColor = 0x5a9a68; // Green color for banks
 
     // Left bank
     const leftBank = this.scene.add.rectangle(
@@ -56,7 +56,7 @@ export class RiverManager {
       GAME_HEIGHT / 2,
       bankWidth,
       GAME_HEIGHT,
-      bankColor,
+      bankColor
     );
 
     // Right bank
@@ -65,7 +65,7 @@ export class RiverManager {
       GAME_HEIGHT / 2,
       bankWidth,
       GAME_HEIGHT,
-      bankColor,
+      bankColor
     );
 
     this.riverBanks = { left: leftBank, right: rightBank };

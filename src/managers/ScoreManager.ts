@@ -13,21 +13,21 @@ export class ScoreManager {
   create(): void {
     // Setup jam display
     this.jamImage = this.scene.add.image(16, 32, "jam-word");
-    this.jamImage.setOrigin(0, 0.5);
-    this.jamImage.setScale(0.03);
+    this.jamImage.setOrigin(-0.55, 0);
+    this.jamImage.setScale(0.032);
     this.jamImage.setDepth(100);
 
     // Add counter for jams
     this.jamText = this.scene.add.text(
-      this.jamImage.displayWidth + 15,
+      this.jamImage.displayWidth + 50,
       32,
       ": 0",
       {
         fontSize: "32px",
-        color: "#FFD700",
+        color: "#FFDC77",
         stroke: "#000",
         strokeThickness: 4,
-      },
+      }
     );
     this.jamText.setDepth(100); // Set high depth to ensure visibility
   }

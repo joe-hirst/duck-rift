@@ -16,13 +16,13 @@ export class MainMenuScene extends Phaser.Scene {
     const titleText = this.add.text(
       GAME_WIDTH / 2,
       GAME_HEIGHT / 3,
-      "DUCK RIFT",
+      "DUCK WATER RIFTING",
       {
-        fontSize: "64px",
+        fontSize: "48px",
         color: "#ffffff",
         stroke: "#000000",
         strokeThickness: 6,
-      },
+      }
     );
     titleText.setOrigin(0.5);
 
@@ -43,7 +43,7 @@ export class MainMenuScene extends Phaser.Scene {
           top: 10,
           bottom: 10,
         },
-      },
+      }
     );
     startButton.setOrigin(0.5);
     startButton.setInteractive();
@@ -77,7 +77,7 @@ export class MainMenuScene extends Phaser.Scene {
         stroke: "#000000",
         strokeThickness: 3,
         align: "center",
-      },
+      }
     );
     instructionsText.setOrigin(0.5);
 

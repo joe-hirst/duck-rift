@@ -3,9 +3,9 @@ import Phaser from "phaser";
 export class ScoreManager {
   private scene: Phaser.Scene;
   private score: number = 0;
-  private coins: number = 0;
+  private jams: number = 0;
   private scoreText!: Phaser.GameObjects.Text;
-  private coinText!: Phaser.GameObjects.Text;
+  private jamText!: Phaser.GameObjects.Text;
   private scoreTimer!: Phaser.Time.TimerEvent;
 
   constructor(scene: Phaser.Scene) {
@@ -22,14 +22,14 @@ export class ScoreManager {
     });
     this.scoreText.setDepth(100); // Set high depth to ensure visibility
 
-    // Setup coin display
-    this.coinText = this.scene.add.text(16, 48, "Coins: 0", {
+    // Setup jam display
+    this.jamText = this.scene.add.text(16, 48, "Jams: 0", {
       fontSize: "24px",
       color: "#FFD700",
       stroke: "#000",
       strokeThickness: 4,
     });
-    this.coinText.setDepth(100); // Set high depth to ensure visibility
+    this.jamText.setDepth(100); // Set high depth to ensure visibility
 
     // Start the score incrementing
     this.scoreTimer = this.scene.time.addEvent({
@@ -63,15 +63,15 @@ export class ScoreManager {
   }
 
   incrementCoins(amount: number = 1): void {
-    this.coins += amount;
-    this.updateCoinDisplay();
+    this.jams += amount;
+    this.updateJamDisplay();
 
-    // Add bonus score for collecting coins
+    // Add bonus score for collecting jams
     this.incrementScore(amount * 10);
   }
 
-  private updateCoinDisplay(): void {
-    this.coinText.setText(`Coins: ${this.coins}`);
+  private updateJamDisplay(): void {
+    this.jamText.setText(`Jams: ${this.jams}`);
   }
 
   getScore(): number {
@@ -79,18 +79,18 @@ export class ScoreManager {
   }
 
   getCoins(): number {
-    return this.coins;
+    return this.jams;
   }
 
   reset(): void {
     this.score = 0;
-    this.coins = 0;
+    this.jams = 0;
     this.updateScoreDisplay();
-    this.updateCoinDisplay();
+    this.updateJamDisplay();
 
     // Re-apply depth to ensure visibility
     if (this.scoreText) this.scoreText.setDepth(100);
-    if (this.coinText) this.coinText.setDepth(100);
+    if (this.jamText) this.jamText.setDepth(100);
 
     // Unpause the score timer
     if (this.scoreTimer) {

@@ -1,30 +1,24 @@
 import Phaser from "phaser";
 import { GAME_HEIGHT, GAME_SPEED } from "../config";
 
-export class Coin extends Phaser.Physics.Arcade.Sprite {
+export class Jam extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: Phaser.Scene, x: number) {
-    super(scene, x, 0, "coin");
+    super(scene, x, 0, "jam");
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
-
+    
+    // Scale down the jam image to a reasonable size
+    this.setScale(0.08);
     this.setPosition(x, -50);
   }
 
   static preloadAssets(scene: Phaser.Scene) {
-    // Create coin placeholder
-    const coinGraphics = scene.add.graphics();
-    coinGraphics.fillStyle(0xffd700, 1); // Gold color
-    coinGraphics.fillCircle(15, 15, 15);
-    // Add detail to coin
-    coinGraphics.lineStyle(1, 0xffa500, 1);
-    coinGraphics.strokeCircle(15, 15, 10);
-    coinGraphics.generateTexture("coin", 30, 30);
-    coinGraphics.clear();
+    scene.load.image("jam", "/assets/jam.png");
   }
 
   create() {
-    this.setTexture("coin");
+    this.setTexture("jam");
     if (this.body) {
       // Use a significantly larger hitbox for much more reliable collision detection
       this.body.setSize(40, 40);
@@ -50,7 +44,7 @@ export class Coin extends Phaser.Physics.Arcade.Sprite {
     // Spin animation
     this.angle += 2;
 
-    // Ensure coin keeps moving
+    // Ensure jam keeps moving
     if (this.body && this.body.velocity.y === 0) {
       this.body.velocity.y = GAME_SPEED;
     }

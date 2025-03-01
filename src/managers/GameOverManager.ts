@@ -5,7 +5,7 @@ export class GameOverManager {
   private scene: Phaser.Scene;
   private gameOverText!: Phaser.GameObjects.Text;
   private finalScoreText!: Phaser.GameObjects.Text;
-  private coinsCollectedText!: Phaser.GameObjects.Text;
+  private jamsCollectedText!: Phaser.GameObjects.Text;
   private retryText!: Phaser.GameObjects.Text;
   private menuText!: Phaser.GameObjects.Text;
 
@@ -47,11 +47,11 @@ export class GameOverManager {
     );
     this.finalScoreText.setOrigin(0.5);
 
-    // Show coins collected
-    this.coinsCollectedText = this.scene.add.text(
+    // Show jams collected
+    this.jamsCollectedText = this.scene.add.text(
       GAME_WIDTH / 2,
       GAME_HEIGHT / 2 + 70,
-      `Coins Collected: ${coins}`,
+      `Jams Collected: ${coins}`,
       {
         fontSize: "28px",
         color: "#FFD700",
@@ -59,7 +59,7 @@ export class GameOverManager {
         strokeThickness: 4,
       },
     );
-    this.coinsCollectedText.setOrigin(0.5);
+    this.jamsCollectedText.setOrigin(0.5);
 
     // Show retry text
     this.retryText = this.scene.add.text(
@@ -102,7 +102,7 @@ export class GameOverManager {
   cleanup(): void {
     if (this.gameOverText) this.gameOverText.destroy();
     if (this.finalScoreText) this.finalScoreText.destroy();
-    if (this.coinsCollectedText) this.coinsCollectedText.destroy();
+    if (this.jamsCollectedText) this.jamsCollectedText.destroy();
     if (this.retryText) this.retryText.destroy();
     if (this.menuText) this.menuText.destroy();
   }

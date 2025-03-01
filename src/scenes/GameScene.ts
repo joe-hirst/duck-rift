@@ -7,13 +7,13 @@ import { ObstacleManager } from "../managers/ObstacleManager";
 import { PauseManager } from "../managers/PauseManager";
 import { ScoreManager } from "../managers/ScoreManager";
 import { GameOverManager } from "../managers/GameOverManager";
-import { CoinManager } from "../managers/CoinManager";
+import { JamManager } from "../managers/JamManager";
 
 export class GameScene extends Phaser.Scene {
   private duck!: Duck;
   private riverManager!: RiverManager;
   private obstacleManager!: ObstacleManager;
-  private coinManager!: CoinManager;
+  private jamManager!: JamManager;
   private pauseManager!: PauseManager;
   private scoreManager!: ScoreManager;
   private gameOverManager!: GameOverManager;
@@ -38,8 +38,8 @@ export class GameScene extends Phaser.Scene {
     );
     this.obstacleManager.preload();
 
-    this.coinManager = new CoinManager(this, this.collectCoin.bind(this));
-    this.coinManager.preload();
+    this.jamManager = new JamManager(this, this.collectJam.bind(this));
+    this.jamManager.preload();
 
     // Load duck image
     this.load.image("duck", "/assets/duck.png");
@@ -82,8 +82,8 @@ export class GameScene extends Phaser.Scene {
       this.riverManager.getRiverbedWidth(),
     );
 
-    // Create coins and setup collection
-    this.coinManager.create(
+    // Create jams and setup collection
+    this.jamManager.create(
       this.duck,
       this.riverManager.getLeftEdge(),
       this.riverManager.getRiverbedWidth(),
@@ -93,7 +93,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseManager.addTimer(this.scoreManager.getScoreTimer());
     this.pauseManager.addTimer(this.obstacleManager.getObstacleTimer());
     this.pauseManager.addTimer(this.obstacleManager.getDifficultyTimer());
-    this.pauseManager.addTimer(this.coinManager.getCoinTimer());
+    this.pauseManager.addTimer(this.jamManager.getJamTimer());
   }
 
   update() {
@@ -117,11 +117,11 @@ export class GameScene extends Phaser.Scene {
     // Update obstacles
     this.obstacleManager.update(this.pauseManager.isPauseActive());
 
-    // Update coins
-    this.coinManager.update(this.pauseManager.isPauseActive());
+    // Update jams
+    this.jamManager.update(this.pauseManager.isPauseActive());
   }
 
-  private collectCoin(value: number): void {
+  private collectJam(value: number): void {
     this.scoreManager.incrementCoins(value);
   }
 
@@ -130,8 +130,8 @@ export class GameScene extends Phaser.Scene {
 
     this.gameOver = true;
 
-    // Stop coins and obstacles
-    this.coinManager.setGameOver(true);
+    // Stop jams and obstacles
+    this.jamManager.setGameOver(true);
 
     // Stop the score from incrementing
     this.scoreManager.stopScoreTimer();
@@ -158,8 +158,8 @@ export class GameScene extends Phaser.Scene {
     // Reset game state
     this.gameOver = false;
 
-    // Reset coin manager
-    this.coinManager.reset();
+    // Reset jam manager
+    this.jamManager.reset();
 
     // Restart the scene
     this.scene.restart();

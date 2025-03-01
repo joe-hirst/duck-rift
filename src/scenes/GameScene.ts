@@ -43,6 +43,8 @@ export class GameScene extends Phaser.Scene {
 
     // Load duck image
     this.load.image("duck", "/assets/duck.png");
+    // Load jam word image
+    this.load.image("jam-word", "/assets/jam-word.png");
   }
 
   create() {

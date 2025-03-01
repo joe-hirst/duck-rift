@@ -5,6 +5,7 @@ export class ScoreManager {
   private score: number = 0;
   private jams: number = 0;
   private scoreText!: Phaser.GameObjects.Text;
+  private jamImage!: Phaser.GameObjects.Image;
   private jamText!: Phaser.GameObjects.Text;
   private scoreTimer!: Phaser.Time.TimerEvent;
 
@@ -23,12 +24,23 @@ export class ScoreManager {
     this.scoreText.setDepth(100); // Set high depth to ensure visibility
 
     // Setup jam display
-    this.jamText = this.scene.add.text(16, 48, "Jams: 0", {
-      fontSize: "24px",
-      color: "#FFD700",
-      stroke: "#000",
-      strokeThickness: 4,
-    });
+    this.jamImage = this.scene.add.image(16, 64, "jam-word");
+    this.jamImage.setOrigin(0, 0.5);
+    this.jamImage.setScale(0.03); // Make it 50% of original size
+    this.jamImage.setDepth(100);
+
+    // Add counter for jams
+    this.jamText = this.scene.add.text(
+      this.jamImage.displayWidth + 15,
+      48,
+      ": 0",
+      {
+        fontSize: "32px",
+        color: "#FFD700",
+        stroke: "#000",
+        strokeThickness: 4,
+      }
+    );
     this.jamText.setDepth(100); // Set high depth to ensure visibility
 
     // Start the score incrementing
@@ -71,7 +83,7 @@ export class ScoreManager {
   }
 
   private updateJamDisplay(): void {
-    this.jamText.setText(`Jams: ${this.jams}`);
+    this.jamText.setText(`: ${this.jams}`);
   }
 
   getScore(): number {
@@ -90,6 +102,7 @@ export class ScoreManager {
 
     // Re-apply depth to ensure visibility
     if (this.scoreText) this.scoreText.setDepth(100);
+    if (this.jamImage) this.jamImage.setDepth(100);
     if (this.jamText) this.jamText.setDepth(100);
 
     // Unpause the score timer

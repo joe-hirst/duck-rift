@@ -31,4 +31,4 @@
 - `/src/objects`: Game entity classes (Duck, Obstacle)
 - `/src/assets`: Game assets (images, audio)
 
-Always run `pnpm lint`, `pnpm format:check`, and `pnpm build` to verify the game compiles and follows style guidelines.
+Always run `pnpm format`, `pnpm lint`, and `pnpm build` to verify the game compiles and follows style guidelines.

@@ -20,6 +20,7 @@ export class ScoreManager {
       stroke: "#000",
       strokeThickness: 4,
     });
+    this.scoreText.setDepth(100); // Set high depth to ensure visibility
 
     // Setup coin display
     this.coinText = this.scene.add.text(16, 48, "Coins: 0", {
@@ -28,6 +29,7 @@ export class ScoreManager {
       stroke: "#000",
       strokeThickness: 4,
     });
+    this.coinText.setDepth(100); // Set high depth to ensure visibility
 
     // Start the score incrementing
     this.scoreTimer = this.scene.time.addEvent({
@@ -42,6 +44,13 @@ export class ScoreManager {
   // Used to pause the score timer when game is paused
   getScoreTimer(): Phaser.Time.TimerEvent {
     return this.scoreTimer;
+  }
+  
+  // Stop score timer on game over
+  stopScoreTimer(): void {
+    if (this.scoreTimer) {
+      this.scoreTimer.paused = true;
+    }
   }
 
   incrementScore(amount: number = 1): void {
@@ -78,5 +87,14 @@ export class ScoreManager {
     this.coins = 0;
     this.updateScoreDisplay();
     this.updateCoinDisplay();
+    
+    // Re-apply depth to ensure visibility
+    if (this.scoreText) this.scoreText.setDepth(100);
+    if (this.coinText) this.coinText.setDepth(100);
+    
+    // Unpause the score timer
+    if (this.scoreTimer) {
+      this.scoreTimer.paused = false;
+    }
   }
 }

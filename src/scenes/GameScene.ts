@@ -136,6 +136,9 @@ export class GameScene extends Phaser.Scene {
     // Stop coins and obstacles
     this.coinManager.setGameOver(true);
 
+    // Stop the score from incrementing
+    this.scoreManager.stopScoreTimer();
+
     // Stop the music
     this.bgMusic.stop();
 

@@ -18,12 +18,16 @@ export class GameScene extends Phaser.Scene {
     left: Phaser.GameObjects.Rectangle;
     right: Phaser.GameObjects.Rectangle;
   };
+  private bgMusic!: Phaser.Sound.BaseSound;
 
   constructor() {
     super("GameScene");
   }
 
   preload() {
+    // Load background music
+    this.load.audio('bgMusic', '/assets/Retro Beat.ogg');
+    
     // Create temporary graphics for the repeating river texture
     const graphics = this.add.graphics();
     graphics.fillStyle(0x4488cc, 1); // Blue color for water
@@ -52,6 +56,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
+    // Play background music
+    this.bgMusic = this.sound.add('bgMusic', { 
+      volume: 0.5,
+      loop: true 
+    });
+    this.bgMusic.play();
+
     // Create the scrolling river background
     this.riverBackground = this.add.tileSprite(
       GAME_WIDTH / 2,
@@ -311,6 +322,9 @@ export class GameScene extends Phaser.Scene {
     if (this.gameOver) return;
 
     this.gameOver = true;
+
+    // Stop the music
+    this.bgMusic.stop();
 
     // Stop obstacle spawning and movement
     this.obstacleTimer.remove();

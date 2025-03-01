@@ -19,6 +19,9 @@ export class GameScene extends Phaser.Scene {
     right: Phaser.GameObjects.Rectangle;
   };
   private bgMusic!: Phaser.Sound.BaseSound;
+  private isPaused: boolean = false;
+  private pauseGroup!: Phaser.GameObjects.Group;
+  private escKey!: Phaser.Input.Keyboard.Key;
 
   constructor() {
     super("GameScene");
@@ -62,6 +65,15 @@ export class GameScene extends Phaser.Scene {
       loop: true 
     });
     this.bgMusic.play();
+    
+    // Setup ESC key for pause
+    if (this.input.keyboard) {
+      this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    }
+    
+    // Create pause menu group (initially hidden)
+    this.pauseGroup = this.add.group();
+    this.createPauseMenu();
 
     // Create the scrolling river background
     this.riverBackground = this.add.tileSprite(
@@ -219,6 +231,13 @@ export class GameScene extends Phaser.Scene {
 
   update() {
     if (this.gameOver) return;
+    
+    // Check for ESC key press to toggle pause
+    if (this.escKey && Phaser.Input.Keyboard.JustDown(this.escKey)) {
+      this.togglePause();
+    }
+    
+    if (this.isPaused) return;
 
     // Update the duck/raft
     this.duck.update();
@@ -245,7 +264,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private spawnObstacle() {
-    if (this.gameOver) return;
+    if (this.gameOver || this.isPaused) return;
 
     // Determine the riverbed width (area between banks)
     const riverBedWidth =
@@ -285,7 +304,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private createSingleObstacle(x: number, type: ObstacleType) {
-    if (this.gameOver) return;
+    if (this.gameOver || this.isPaused) return;
 
     // Create the obstacle
     const obstacle = new Obstacle(this, x, type);
@@ -319,7 +338,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handleCollision(duck: Duck, obstacle: Obstacle) {
-    if (this.gameOver) return;
+    if (this.gameOver || this.isPaused) return;
 
     this.gameOver = true;
 
@@ -389,6 +408,82 @@ export class GameScene extends Phaser.Scene {
         this.difficultyLevel = 1;
         this.scene.restart();
       });
+    }
+  }
+
+  private createPauseMenu() {
+    // Create semi-transparent overlay
+    const overlay = this.add.rectangle(
+      GAME_WIDTH / 2,
+      GAME_HEIGHT / 2,
+      GAME_WIDTH,
+      GAME_HEIGHT,
+      0x000000,
+      0.7
+    );
+    
+    // Create pause text
+    const pauseText = this.add.text(
+      GAME_WIDTH / 2,
+      GAME_HEIGHT / 2 - 50,
+      "PAUSED",
+      {
+        fontSize: "64px",
+        color: "#ffffff",
+        stroke: "#000",
+        strokeThickness: 6
+      }
+    );
+    pauseText.setOrigin(0.5);
+    
+    // Create resume instruction text
+    const resumeText = this.add.text(
+      GAME_WIDTH / 2,
+      GAME_HEIGHT / 2 + 50,
+      "Press ESC to resume",
+      {
+        fontSize: "32px",
+        color: "#ffffff",
+        stroke: "#000",
+        strokeThickness: 4
+      }
+    );
+    resumeText.setOrigin(0.5);
+
+    // Add all elements to the pause group
+    this.pauseGroup.add(overlay);
+    this.pauseGroup.add(pauseText);
+    this.pauseGroup.add(resumeText);
+    
+    // Hide the pause group initially
+    this.pauseGroup.setVisible(false);
+  }
+  
+  private togglePause() {
+    this.isPaused = !this.isPaused;
+    
+    // Toggle pause menu visibility
+    this.pauseGroup.setVisible(this.isPaused);
+    
+    // Pause/resume game physics
+    if (this.isPaused) {
+      this.physics.pause();
+      // Pause background music
+      if (this.bgMusic.isPlaying) {
+        this.bgMusic.pause();
+      }
+      // Pause all timers
+      this.obstacleTimer.paused = true;
+      this.difficultyTimer.paused = true;
+    } else {
+      this.physics.resume();
+      // Resume background music
+      if (!this.bgMusic.isPlaying) {
+        this.bgMusic.resume();
+      }
+      // Resume all timers
+      this.obstacleTimer.paused = false;
+      this.difficultyTimer.paused = false;
     }
   }
 }

@@ -65,14 +65,15 @@ export class Duck extends Phaser.Physics.Arcade.Sprite {
     }
 
     // Add a subtle bobbing motion to simulate floating on water
+    // Using setY instead of direct y manipulation ensures physics body updates properly
     const bobAmount = Math.sin(this.scene.time.now * 0.003) * 0.5;
-    this.y += bobAmount;
+    this.setY(this.y + bobAmount);
 
     // Ensure the duck stays within the river bounds
     if (this.x < this.riverBounds.left) {
-      this.x = this.riverBounds.left;
+      this.setX(this.riverBounds.left);
     } else if (this.x > this.riverBounds.right) {
-      this.x = this.riverBounds.right;
+      this.setX(this.riverBounds.right);
     }
   }
 

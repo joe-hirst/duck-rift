@@ -26,9 +26,16 @@ export class Coin extends Phaser.Physics.Arcade.Sprite {
   create() {
     this.setTexture('coin');
     if (this.body) {
-      this.body.setSize(25, 25);
+      // Use a significantly larger hitbox for much more reliable collision detection
+      this.body.setSize(40, 40);
+      // Center the larger hitbox
+      this.body.setOffset(-5, -5);
+      // Ensure the body is enabled
+      this.body.enable = true;
     }
     
+    // Initialize as not collected
+    this.setData('collected', false);
     this.setActive(true);
     this.setVisible(true);
   }

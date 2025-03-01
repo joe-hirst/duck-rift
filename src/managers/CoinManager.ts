@@ -32,7 +32,7 @@ export class CoinManager {
       loop: true,
     });
 
-    // Setup collision detection
+    // Setup collision detection with higher priority for reliable detection
     this.scene.physics.add.overlap(
       duck,
       this.coins,
@@ -51,6 +51,19 @@ export class CoinManager {
       if (coin.body && coin.body.velocity.y === 0) {
         coin.body.velocity.y = GAME_SPEED;
       }
+      
+      // Manually check for overlaps with the duck to ensure coins are collected
+      this.scene.children.getAll().forEach(sceneChild => {
+        if (sceneChild instanceof Duck && coin.active) {
+          const duck = sceneChild as Duck;
+          if (Phaser.Geom.Intersects.RectangleToRectangle(
+            duck.getBounds(), 
+            coin.getBounds()
+          )) {
+            this.handleCollection(duck, coin);
+          }
+        }
+      });
       
       coin.update();
     });
@@ -74,9 +87,12 @@ export class CoinManager {
 
   private handleCollection = (duck: unknown, coinObj: unknown): void => {
     const coin = coinObj as Coin;
-    if (coin) {
-      coin.destroy();
+    if (coin && !coin.getData('collected')) {
+      // Mark as collected to prevent multiple collision calls
+      coin.setData('collected', true);
+      // Ensure collection happens
       this.onCollect(1);
+      coin.destroy();
     }
   }
 

@@ -21,6 +21,7 @@ export class GameScene extends Phaser.Scene {
   private bgMusic!: Phaser.Sound.BaseSound;
   private isPaused: boolean = false;
   private pauseGroup!: Phaser.GameObjects.Group;
+  private pauseScoreText!: Phaser.GameObjects.Text;
   private escKey!: Phaser.Input.Keyboard.Key;
 
   constructor() {
@@ -169,7 +170,7 @@ export class GameScene extends Phaser.Scene {
     this.time.addEvent({
       delay: 100,
       callback: () => {
-        if (!this.gameOver) {
+        if (!this.gameOver && !this.isPaused) {
           this.score += 1;
           this.scoreText.setText(`Score: ${this.score}`);
         }
@@ -425,8 +426,8 @@ export class GameScene extends Phaser.Scene {
     // Create pause text
     const pauseText = this.add.text(
       GAME_WIDTH / 2,
-      GAME_HEIGHT / 2 - 50,
-      "PAUSED",
+      GAME_HEIGHT / 2 - 70,
+      "GAME PAUSED",
       {
         fontSize: "64px",
         color: "#ffffff",
@@ -436,11 +437,28 @@ export class GameScene extends Phaser.Scene {
     );
     pauseText.setOrigin(0.5);
     
+    // Create current score text with initial value
+    this.pauseScoreText = this.add.text(
+      GAME_WIDTH / 2,
+      GAME_HEIGHT / 2,
+      `Score: 0`,
+      {
+        fontSize: "36px",
+        color: "#ffff00",
+        stroke: "#000",
+        strokeThickness: 4
+      }
+    );
+    this.pauseScoreText.setOrigin(0.5);
+    
+    // Add to pause group
+    this.pauseGroup.add(this.pauseScoreText);
+    
     // Create resume instruction text
     const resumeText = this.add.text(
       GAME_WIDTH / 2,
-      GAME_HEIGHT / 2 + 50,
-      "Press ESC to resume",
+      GAME_HEIGHT / 2 + 70,
+      "Press ESC to continue",
       {
         fontSize: "32px",
         color: "#ffffff",
@@ -461,6 +479,11 @@ export class GameScene extends Phaser.Scene {
   
   private togglePause() {
     this.isPaused = !this.isPaused;
+    
+    // Update the score text in the pause menu before showing it
+    if (this.isPaused) {
+      this.pauseScoreText.setText(`Score: ${this.score}`);
+    }
     
     // Toggle pause menu visibility
     this.pauseGroup.setVisible(this.isPaused);

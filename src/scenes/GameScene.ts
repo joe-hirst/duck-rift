@@ -380,6 +380,13 @@ export class GameScene extends Phaser.Scene {
     // Add retry input
     if (this.input && this.input.keyboard) {
       this.input.keyboard.once("keydown-SPACE", () => {
+        // Stop any existing music that might be playing
+        this.sound.stopAll();
+        // Reset game state and restart the scene
+        this.gameOver = false;
+        this.score = 0;
+        this.riverSpeed = 2;
+        this.difficultyLevel = 1;
         this.scene.restart();
       });
     }

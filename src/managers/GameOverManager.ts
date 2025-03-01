@@ -4,7 +4,6 @@ import { GAME_WIDTH, GAME_HEIGHT } from "../config";
 export class GameOverManager {
   private scene: Phaser.Scene;
   private gameOverText!: Phaser.GameObjects.Text;
-  private finalScoreText!: Phaser.GameObjects.Text;
   private jamsCollectedText!: Phaser.GameObjects.Text;
   private retryText!: Phaser.GameObjects.Text;
   private menuText!: Phaser.GameObjects.Text;
@@ -15,7 +14,7 @@ export class GameOverManager {
 
   showGameOver(
     score: number,
-    coins: number,
+    jams: number,
     onRetry: () => void,
     onMainMenu: () => void,
   ): void {
@@ -33,27 +32,13 @@ export class GameOverManager {
     );
     this.gameOverText.setOrigin(0.5);
 
-    // Show score
-    this.finalScoreText = this.scene.add.text(
-      GAME_WIDTH / 2,
-      GAME_HEIGHT / 2 + 30,
-      `Final Score: ${score}`,
-      {
-        fontSize: "32px",
-        color: "#ffffff",
-        stroke: "#000",
-        strokeThickness: 4,
-      },
-    );
-    this.finalScoreText.setOrigin(0.5);
-
     // Show jams collected
     this.jamsCollectedText = this.scene.add.text(
       GAME_WIDTH / 2,
-      GAME_HEIGHT / 2 + 70,
-      `Jams Collected: ${coins}`,
+      GAME_HEIGHT / 2 + 30,
+      `Jams Collected: ${jams}`,
       {
-        fontSize: "28px",
+        fontSize: "32px",
         color: "#FFD700",
         stroke: "#000",
         strokeThickness: 4,
@@ -101,7 +86,6 @@ export class GameOverManager {
 
   cleanup(): void {
     if (this.gameOverText) this.gameOverText.destroy();
-    if (this.finalScoreText) this.finalScoreText.destroy();
     if (this.jamsCollectedText) this.jamsCollectedText.destroy();
     if (this.retryText) this.retryText.destroy();
     if (this.menuText) this.menuText.destroy();

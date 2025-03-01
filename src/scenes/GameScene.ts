@@ -92,7 +92,6 @@ export class GameScene extends Phaser.Scene {
     );
 
     // Add timers to pause manager
-    this.pauseManager.addTimer(this.scoreManager.getScoreTimer());
     this.pauseManager.addTimer(this.obstacleManager.getObstacleTimer());
     this.pauseManager.addTimer(this.obstacleManager.getDifficultyTimer());
     this.pauseManager.addTimer(this.jamManager.getJamTimer());
@@ -106,7 +105,6 @@ export class GameScene extends Phaser.Scene {
 
     // If paused, don't update game elements
     if (this.pauseManager.isPauseActive()) {
-      this.pauseManager.updateScore(this.scoreManager.getScore());
       return;
     }
 
@@ -124,7 +122,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private collectJam(value: number): void {
-    this.scoreManager.incrementCoins(value);
+    this.scoreManager.incrementJams(value);
   }
 
   private handleCollision(duck: Duck, _obstacle: Obstacle): void {
@@ -135,9 +133,6 @@ export class GameScene extends Phaser.Scene {
     // Stop jams and obstacles
     this.jamManager.setGameOver(true);
 
-    // Stop the score from incrementing
-    this.scoreManager.stopScoreTimer();
-
     // Stop the music
     this.bgMusic.stop();
 
@@ -146,8 +141,8 @@ export class GameScene extends Phaser.Scene {
 
     // Show game over screen
     this.gameOverManager.showGameOver(
-      this.scoreManager.getScore(),
-      this.scoreManager.getCoins(),
+      0,
+      this.scoreManager.getJams(),
       this.restartGame.bind(this),
       this.goToMainMenu.bind(this),
     );

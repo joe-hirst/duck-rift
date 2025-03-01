@@ -4,7 +4,6 @@ import { GAME_WIDTH, GAME_HEIGHT } from "../config";
 export class PauseManager {
   private scene: Phaser.Scene;
   private pauseMenuContainer!: Phaser.GameObjects.Container;
-  private pauseScoreText!: Phaser.GameObjects.Text;
   private pauseGroup!: Phaser.GameObjects.Group;
   private escKey!: Phaser.Input.Keyboard.Key;
   private mKey!: Phaser.Input.Keyboard.Key;
@@ -87,7 +86,7 @@ export class PauseManager {
     // Create pause text - with yellow color
     const pauseText = this.scene.add.text(
       0,
-      -100, // Relative to container center
+      -50, // Relative to container center
       "GAME PAUSED",
       {
         fontSize: "64px",
@@ -98,24 +97,10 @@ export class PauseManager {
     );
     pauseText.setOrigin(0.5);
 
-    // Create current score text with initial value - match final score text style
-    this.pauseScoreText = this.scene.add.text(
-      0,
-      -20, // Relative to container center
-      `Score: 0`,
-      {
-        fontSize: "32px",
-        color: "#ffffff",
-        stroke: "#000",
-        strokeThickness: 4,
-      },
-    );
-    this.pauseScoreText.setOrigin(0.5);
-
     // Create resume instruction text - match retry text style
     const resumeText = this.scene.add.text(
       0,
-      50, // Relative to container center
+      30, // Relative to container center
       "Press SPACE or ESC to continue",
       {
         fontSize: "24px",
@@ -141,13 +126,7 @@ export class PauseManager {
     menuText.setOrigin(0.5);
 
     // Add all elements to the container
-    this.pauseMenuContainer.add([
-      overlay,
-      pauseText,
-      this.pauseScoreText,
-      resumeText,
-      menuText,
-    ]);
+    this.pauseMenuContainer.add([overlay, pauseText, resumeText, menuText]);
 
     // Set the pause group to this container
     this.pauseGroup = this.scene.add.group();
@@ -201,10 +180,6 @@ export class PauseManager {
     this.timers.forEach((timer) => {
       timer.paused = false;
     });
-  }
-
-  updateScore(score: number): void {
-    this.pauseScoreText.setText(`Score: ${score}`);
   }
 
   isPauseActive(): boolean {

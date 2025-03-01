@@ -25,6 +25,7 @@ export class GameScene extends Phaser.Scene {
   private pauseScoreText!: Phaser.GameObjects.Text;
   private escKey!: Phaser.Input.Keyboard.Key;
   private mKey!: Phaser.Input.Keyboard.Key;
+  private spaceKey!: Phaser.Input.Keyboard.Key;
 
   constructor() {
     super("GameScene");
@@ -73,6 +74,7 @@ export class GameScene extends Phaser.Scene {
     if (this.input.keyboard) {
       this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
       this.mKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+      this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
     
     // Create pause menu (this initializes this.pauseGroup)
@@ -237,6 +239,11 @@ export class GameScene extends Phaser.Scene {
     
     // Check for ESC key press to toggle pause
     if (this.escKey && Phaser.Input.Keyboard.JustDown(this.escKey)) {
+      this.togglePause();
+    }
+    
+    // Check for SPACE key press to unpause the game when paused
+    if (this.isPaused && this.spaceKey && Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
       this.togglePause();
     }
     
@@ -453,13 +460,13 @@ export class GameScene extends Phaser.Scene {
       0.7
     );
     
-    // Create pause text - similar to game over text
+    // Create pause text - with yellow color
     const pauseText = this.add.text(
       0, -100,  // Relative to container center
       "GAME PAUSED",
       {
         fontSize: "64px",
-        color: "#ff0000",
+        color: "#ffff00",
         stroke: "#000",
         strokeThickness: 6
       }
@@ -482,7 +489,7 @@ export class GameScene extends Phaser.Scene {
     // Create resume instruction text - match retry text style
     const resumeText = this.add.text(
       0, 50,  // Relative to container center
-      "Press ESC to continue",
+      "Press SPACE or ESC to continue",
       {
         fontSize: "24px",
         color: "#ffffff",

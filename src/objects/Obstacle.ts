@@ -86,11 +86,18 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
     // Check if the obstacle is off the bottom of the screen
     if (this.y > GAME_HEIGHT + this.height) {
       this.destroy();
+      return;
     }
     
     // Make logs sway slightly in the water
     if (this.obstacleType === ObstacleType.LOG) {
       this.rotation += Math.sin(this.y * 0.01) * 0.001;
+    }
+    
+    // Double-check velocity if somehow the obstacle stopped moving
+    if (this.body && this.body.velocity.y === 0) {
+      const defaultSpeed = this.obstacleType === ObstacleType.LOG ? GAME_SPEED + 50 : GAME_SPEED;
+      this.body.velocity.y = defaultSpeed;
     }
   }
   

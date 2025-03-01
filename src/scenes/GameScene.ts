@@ -103,10 +103,9 @@ export class GameScene extends Phaser.Scene {
     // Set the duck's river bounds based on the bank width
     this.duck.setRiverBounds(this.riverBanks.left.width, GAME_WIDTH - this.riverBanks.right.width);
     
-    // Create obstacle group
+    // Create obstacle group - don't use runChildUpdate since we do it manually
     this.obstacles = this.physics.add.group({
-      classType: Obstacle,
-      runChildUpdate: true
+      classType: Obstacle
     });
     
     // Setup obstacle spawning timer
@@ -208,6 +207,20 @@ export class GameScene extends Phaser.Scene {
     
     // Scroll the river background
     this.riverBackground.tilePositionY -= this.riverSpeed;
+    
+    // Make sure all obstacles are moving
+    this.obstacles.getChildren().forEach((child) => {
+      const obstacle = child as Obstacle;
+      
+      // Ensure obstacles keep moving down
+      if (obstacle.body && obstacle.body.velocity.y === 0) {
+        const speed = obstacle.getType() === ObstacleType.LOG ? GAME_SPEED + 50 : GAME_SPEED;
+        obstacle.body.velocity.y = speed;
+      }
+      
+      // Update each obstacle manually
+      obstacle.update();
+    });
   }
 
   private spawnObstacle() {
@@ -225,26 +238,7 @@ export class GameScene extends Phaser.Scene {
     const logChance = Math.min(0.4, 0.1 + (this.difficultyLevel * 0.05));
     const type = Math.random() < logChance ? ObstacleType.LOG : ObstacleType.ROCK;
     
-    // Create the obstacle
-    const obstacle = new Obstacle(this, x, type);
-    obstacle.create();
-    
-    // Adjust velocity based on type and difficulty
-    if (type === ObstacleType.LOG) {
-      // Logs move faster
-      obstacle.setVelocityY(GAME_SPEED + 50);
-      
-      // Add some lateral movement to logs to make them more challenging
-      if (this.difficultyLevel >= 3) {
-        const sideMovement = Phaser.Math.Between(-50, 50);
-        obstacle.setVelocityX(sideMovement);
-      }
-    } else {
-      // Rocks move at normal speed
-      obstacle.setVelocityY(GAME_SPEED);
-    }
-    
-    this.obstacles.add(obstacle);
+    this.createSingleObstacle(x, type);
     
     // At higher difficulty levels, spawn obstacles in groups sometimes
     if (this.difficultyLevel >= 2 && Math.random() < 0.3) {
@@ -257,22 +251,43 @@ export class GameScene extends Phaser.Scene {
           const offsetX = Phaser.Math.Between(leftEdge + 30, leftEdge + riverBedWidth - 30);
           const offsetType = Math.random() < 0.3 ? ObstacleType.LOG : ObstacleType.ROCK;
           
-          const additionalObstacle = new Obstacle(this, offsetX, offsetType);
-          additionalObstacle.create();
-          
-          // Set velocity based on obstacle type
-          if (offsetType === ObstacleType.LOG) {
-            additionalObstacle.setVelocityY(GAME_SPEED + 50);
-            if (this.difficultyLevel >= 3) {
-              additionalObstacle.setVelocityX(Phaser.Math.Between(-50, 50));
-            }
-          } else {
-            additionalObstacle.setVelocityY(GAME_SPEED);
-          }
-          
-          this.obstacles.add(additionalObstacle);
+          this.createSingleObstacle(offsetX, offsetType);
         });
       }
+    }
+  }
+  
+  private createSingleObstacle(x: number, type: ObstacleType) {
+    if (this.gameOver) return;
+    
+    // Create the obstacle
+    const obstacle = new Obstacle(this, x, type);
+    
+    // First add it to the group so it gets proper physics
+    this.obstacles.add(obstacle);
+    
+    // Then initialize it
+    obstacle.create();
+    
+    // Force refresh the physics body to ensure it's properly initialized
+    if (obstacle.body) {
+      obstacle.body.reset(x, -50);
+    }
+    
+    // Set velocity based on type and difficulty
+    const speed = type === ObstacleType.LOG ? GAME_SPEED + 50 : GAME_SPEED;
+    
+    if (obstacle.body) {
+      obstacle.body.velocity.y = speed; // Direct body access to ensure it works
+      
+      // Add some lateral movement to logs at higher difficulty
+      if (type === ObstacleType.LOG && this.difficultyLevel >= 3) {
+        const sideMovement = Phaser.Math.Between(-50, 50);
+        obstacle.body.velocity.x = sideMovement;
+      }
+      
+      // Enable the body explicitly
+      obstacle.body.enable = true;
     }
   }
 

@@ -5,9 +5,9 @@
   "main": "dist/bundle.js",
   "scripts": {
     "copy-assets": "mkdir -p dist/assets && cp -r src/assets/* dist/assets/ && cp src/index.html dist/",
-    "start": "npm run copy-assets && webpack serve --open",
-    "build": "npm run copy-assets && webpack --mode production",
-    "dev": "npm run copy-assets && webpack --mode development --watch"
+    "start": "pnpm run copy-assets && webpack serve --open",
+    "build": "pnpm run copy-assets && webpack --mode production",
+    "dev": "pnpm run copy-assets && webpack --mode development --watch"
   },
   "keywords": [
     "game",

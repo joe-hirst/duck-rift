@@ -22,7 +22,7 @@ export class MainMenuScene extends Phaser.Scene {
         color: "#ffffff",
         stroke: "#000000",
         strokeThickness: 6,
-      }
+      },
     );
     titleText.setOrigin(0.5);
 
@@ -43,7 +43,7 @@ export class MainMenuScene extends Phaser.Scene {
           top: 10,
           bottom: 10,
         },
-      }
+      },
     );
     startButton.setOrigin(0.5);
     startButton.setInteractive();
@@ -77,7 +77,7 @@ export class MainMenuScene extends Phaser.Scene {
         stroke: "#000000",
         strokeThickness: 3,
         align: "center",
-      }
+      },
     );
     instructionsText.setOrigin(0.5);
 

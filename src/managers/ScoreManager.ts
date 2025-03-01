@@ -45,7 +45,7 @@ export class ScoreManager {
   getScoreTimer(): Phaser.Time.TimerEvent {
     return this.scoreTimer;
   }
-  
+
   // Stop score timer on game over
   stopScoreTimer(): void {
     if (this.scoreTimer) {
@@ -65,7 +65,7 @@ export class ScoreManager {
   incrementCoins(amount: number = 1): void {
     this.coins += amount;
     this.updateCoinDisplay();
-    
+
     // Add bonus score for collecting coins
     this.incrementScore(amount * 10);
   }
@@ -87,11 +87,11 @@ export class ScoreManager {
     this.coins = 0;
     this.updateScoreDisplay();
     this.updateCoinDisplay();
-    
+
     // Re-apply depth to ensure visibility
     if (this.scoreText) this.scoreText.setDepth(100);
     if (this.coinText) this.coinText.setDepth(100);
-    
+
     // Unpause the score timer
     if (this.scoreTimer) {
       this.scoreTimer.paused = false;

@@ -38,7 +38,7 @@ export class CoinManager {
       this.coins,
       this.handleCollection,
       undefined,
-      this
+      this,
     );
   }
 
@@ -47,24 +47,26 @@ export class CoinManager {
 
     this.coins.getChildren().forEach((child) => {
       const coin = child as Coin;
-      
+
       if (coin.body && coin.body.velocity.y === 0) {
         coin.body.velocity.y = GAME_SPEED;
       }
-      
+
       // Manually check for overlaps with the duck to ensure coins are collected
-      this.scene.children.getAll().forEach(sceneChild => {
+      this.scene.children.getAll().forEach((sceneChild) => {
         if (sceneChild instanceof Duck && coin.active) {
           const duck = sceneChild as Duck;
-          if (Phaser.Geom.Intersects.RectangleToRectangle(
-            duck.getBounds(), 
-            coin.getBounds()
-          )) {
+          if (
+            Phaser.Geom.Intersects.RectangleToRectangle(
+              duck.getBounds(),
+              coin.getBounds(),
+            )
+          ) {
             this.handleCollection(duck, coin);
           }
         }
       });
-      
+
       coin.update();
     });
   }
@@ -74,10 +76,10 @@ export class CoinManager {
 
     const x = Phaser.Math.Between(leftEdge + 30, leftEdge + riverbedWidth - 30);
     const coin = new Coin(this.scene, x);
-    
+
     this.coins.add(coin);
     coin.create();
-    
+
     if (coin.body) {
       coin.body.reset(x, -50);
       coin.body.velocity.y = GAME_SPEED;
@@ -87,14 +89,14 @@ export class CoinManager {
 
   private handleCollection = (duck: unknown, coinObj: unknown): void => {
     const coin = coinObj as Coin;
-    if (coin && !coin.getData('collected')) {
+    if (coin && !coin.getData("collected")) {
       // Mark as collected to prevent multiple collision calls
-      coin.setData('collected', true);
+      coin.setData("collected", true);
       // Ensure collection happens
       this.onCollect(1);
       coin.destroy();
     }
-  }
+  };
 
   getCoinTimer(): Phaser.Time.TimerEvent {
     return this.coinTimer;

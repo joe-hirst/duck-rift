@@ -7,6 +7,8 @@
 - `pnpm dev`: Copy assets and build in dev mode with watch
 - `pnpm lint`: Run ESLint to check for code issues
 - `pnpm lint:fix`: Run ESLint and automatically fix issues
+- `pnpm format`: Run Prettier to format all source files
+- `pnpm format:check`: Check if files are properly formatted
 
 ## Code Style Guidelines
 
@@ -29,4 +31,4 @@
 - `/src/objects`: Game entity classes (Duck, Obstacle)
 - `/src/assets`: Game assets (images, audio)
 
-Always run `pnpm lint` and `pnpm build` to verify the game compiles.
+Always run `pnpm lint`, `pnpm format:check`, and `pnpm build` to verify the game compiles and follows style guidelines.

@@ -12,7 +12,10 @@ export class ObstacleManager {
   private gameOver: boolean = false;
   private onCollision: (duck: Duck, obstacle: Obstacle) => void;
 
-  constructor(scene: Phaser.Scene, onCollision: (duck: Duck, obstacle: Obstacle) => void) {
+  constructor(
+    scene: Phaser.Scene,
+    onCollision: (duck: Duck, obstacle: Obstacle) => void,
+  ) {
     this.scene = scene;
     this.onCollision = onCollision;
   }
@@ -43,7 +46,7 @@ export class ObstacleManager {
         this.handleCollision(duck as Duck, obstacle as Obstacle);
       },
       undefined,
-      this
+      this,
     );
 
     // Setup difficulty increase timer
@@ -101,7 +104,7 @@ export class ObstacleManager {
 
           const offsetX = Phaser.Math.Between(
             leftEdge + 30,
-            leftEdge + riverbedWidth - 30
+            leftEdge + riverbedWidth - 30,
           );
           const offsetType =
             Math.random() < 0.3 ? ObstacleType.LOG : ObstacleType.ROCK;
@@ -148,7 +151,7 @@ export class ObstacleManager {
 
   private handleCollision(duck: Duck, obstacle: Obstacle): void {
     if (this.gameOver) return;
-    
+
     this.gameOver = true;
     this.stopObstacles();
     this.onCollision(duck, obstacle);
@@ -181,7 +184,7 @@ export class ObstacleManager {
         color: "#ffff00",
         stroke: "#000",
         strokeThickness: 5,
-      }
+      },
     );
     levelText.setOrigin(0.5);
     levelText.setAlpha(0.8);
@@ -226,7 +229,7 @@ export class ObstacleManager {
   reset(): void {
     this.gameOver = false;
     this.difficultyLevel = 1;
-    
+
     // Destroy all existing obstacles
     this.obstacles.clear(true, true);
   }

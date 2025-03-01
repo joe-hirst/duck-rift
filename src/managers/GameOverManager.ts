@@ -13,7 +13,12 @@ export class GameOverManager {
     this.scene = scene;
   }
 
-  showGameOver(score: number, coins: number, onRetry: () => void, onMainMenu: () => void): void {
+  showGameOver(
+    score: number,
+    coins: number,
+    onRetry: () => void,
+    onMainMenu: () => void,
+  ): void {
     // Show game over text
     this.gameOverText = this.scene.add.text(
       GAME_WIDTH / 2,
@@ -24,7 +29,7 @@ export class GameOverManager {
         color: "#ff0000",
         stroke: "#000",
         strokeThickness: 6,
-      }
+      },
     );
     this.gameOverText.setOrigin(0.5);
 
@@ -38,7 +43,7 @@ export class GameOverManager {
         color: "#ffffff",
         stroke: "#000",
         strokeThickness: 4,
-      }
+      },
     );
     this.finalScoreText.setOrigin(0.5);
 
@@ -52,7 +57,7 @@ export class GameOverManager {
         color: "#FFD700",
         stroke: "#000",
         strokeThickness: 4,
-      }
+      },
     );
     this.coinsCollectedText.setOrigin(0.5);
 
@@ -66,10 +71,10 @@ export class GameOverManager {
         color: "#ffffff",
         stroke: "#000",
         strokeThickness: 4,
-      }
+      },
     );
     this.retryText.setOrigin(0.5);
-    
+
     // Show main menu text
     this.menuText = this.scene.add.text(
       GAME_WIDTH / 2,
@@ -80,7 +85,7 @@ export class GameOverManager {
         color: "#ffffff",
         stroke: "#000",
         strokeThickness: 4,
-      }
+      },
     );
     this.menuText.setOrigin(0.5);
 
@@ -88,7 +93,7 @@ export class GameOverManager {
     if (this.scene.input && this.scene.input.keyboard) {
       // Space key for retry
       this.scene.input.keyboard.once("keydown-SPACE", onRetry);
-      
+
       // M key for main menu
       this.scene.input.keyboard.once("keydown-M", onMainMenu);
     }

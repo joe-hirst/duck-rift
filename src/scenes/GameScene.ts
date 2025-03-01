@@ -34,14 +34,11 @@ export class GameScene extends Phaser.Scene {
 
     this.obstacleManager = new ObstacleManager(
       this,
-      this.handleCollision.bind(this)
+      this.handleCollision.bind(this),
     );
     this.obstacleManager.preload();
-    
-    this.coinManager = new CoinManager(
-      this,
-      this.collectCoin.bind(this)
-    );
+
+    this.coinManager = new CoinManager(this, this.collectCoin.bind(this));
     this.coinManager.preload();
 
     // Load duck image
@@ -75,21 +72,21 @@ export class GameScene extends Phaser.Scene {
     // Set the duck's river bounds
     this.duck.setRiverBounds(
       this.riverManager.getRiverBounds().left,
-      this.riverManager.getRiverBounds().right
+      this.riverManager.getRiverBounds().right,
     );
 
     // Create obstacles and setup collision
     this.obstacleManager.create(
       this.duck,
       this.riverManager.getLeftEdge(),
-      this.riverManager.getRiverbedWidth()
+      this.riverManager.getRiverbedWidth(),
     );
-    
+
     // Create coins and setup collection
     this.coinManager.create(
       this.duck,
       this.riverManager.getLeftEdge(),
-      this.riverManager.getRiverbedWidth()
+      this.riverManager.getRiverbedWidth(),
     );
 
     // Add timers to pause manager
@@ -119,11 +116,11 @@ export class GameScene extends Phaser.Scene {
 
     // Update obstacles
     this.obstacleManager.update(this.pauseManager.isPauseActive());
-    
+
     // Update coins
     this.coinManager.update(this.pauseManager.isPauseActive());
   }
-  
+
   private collectCoin(value: number): void {
     this.scoreManager.incrementCoins(value);
   }
@@ -132,7 +129,7 @@ export class GameScene extends Phaser.Scene {
     if (this.gameOver) return;
 
     this.gameOver = true;
-    
+
     // Stop coins and obstacles
     this.coinManager.setGameOver(true);
 
@@ -150,7 +147,7 @@ export class GameScene extends Phaser.Scene {
       this.scoreManager.getScore(),
       this.scoreManager.getCoins(),
       this.restartGame.bind(this),
-      this.goToMainMenu.bind(this)
+      this.goToMainMenu.bind(this),
     );
   }
 
@@ -160,7 +157,7 @@ export class GameScene extends Phaser.Scene {
 
     // Reset game state
     this.gameOver = false;
-    
+
     // Reset coin manager
     this.coinManager.reset();
 

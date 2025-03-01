@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
 export const GAME_WIDTH = 800;
 export const GAME_HEIGHT = 600;
@@ -9,16 +9,16 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
   width: GAME_WIDTH,
   height: GAME_HEIGHT,
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
       gravity: { x: 0, y: 0 },
-      debug: false
-    }
+      debug: false,
+    },
   },
-  backgroundColor: '#4488aa',
+  backgroundColor: "#4488aa",
   pixelArt: true,
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
-  }
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
 };

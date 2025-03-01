@@ -27,6 +27,8 @@ export class GameScene extends Phaser.Scene {
   preload() {
     // Load background music
     this.load.audio("bgMusic", "/assets/Retro Beat.ogg");
+    // Load quack sound effect
+    this.load.audio("quack", "/assets/quack.wav");
 
     // Initialize managers
     this.riverManager = new RiverManager(this);
@@ -34,7 +36,7 @@ export class GameScene extends Phaser.Scene {
 
     this.obstacleManager = new ObstacleManager(
       this,
-      this.handleCollision.bind(this),
+      this.handleCollision.bind(this)
     );
     this.obstacleManager.preload();
 
@@ -74,21 +76,21 @@ export class GameScene extends Phaser.Scene {
     // Set the duck's river bounds
     this.duck.setRiverBounds(
       this.riverManager.getRiverBounds().left,
-      this.riverManager.getRiverBounds().right,
+      this.riverManager.getRiverBounds().right
     );
 
     // Create obstacles and setup collision
     this.obstacleManager.create(
       this.duck,
       this.riverManager.getLeftEdge(),
-      this.riverManager.getRiverbedWidth(),
+      this.riverManager.getRiverbedWidth()
     );
 
     // Create jams and setup collection
     this.jamManager.create(
       this.duck,
       this.riverManager.getLeftEdge(),
-      this.riverManager.getRiverbedWidth(),
+      this.riverManager.getRiverbedWidth()
     );
 
     // Add timers to pause manager
@@ -123,6 +125,7 @@ export class GameScene extends Phaser.Scene {
 
   private collectJam(value: number): void {
     this.scoreManager.incrementJams(value);
+    this.sound.play("quack", { volume: 0.3 });
   }
 
   private handleCollision(duck: Duck, _obstacle: Obstacle): void {
@@ -144,7 +147,7 @@ export class GameScene extends Phaser.Scene {
       0,
       this.scoreManager.getJams(),
       this.restartGame.bind(this),
-      this.goToMainMenu.bind(this),
+      this.goToMainMenu.bind(this)
     );
   }
 

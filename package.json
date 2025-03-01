@@ -16,7 +16,7 @@
     "game-jam"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "phaser": "^3.88.2"
   },

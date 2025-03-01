@@ -5,6 +5,11 @@ export class MainMenuScene extends Phaser.Scene {
   constructor() {
     super('MainMenuScene');
   }
+  
+  preload() {
+    // Load duck image in the main menu too for consistency
+    this.load.image('duck', '/assets/duck.png');
+  }
 
   create() {
     // Add title text

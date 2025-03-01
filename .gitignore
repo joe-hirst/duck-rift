@@ -3,8 +3,7 @@ node_modules/
 .pnpm-store/
 
 # Build files
-dist/bundle.js
-dist/bundle.js.map
+dist/
 
 # IDE files
 .vscode/

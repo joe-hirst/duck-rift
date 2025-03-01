@@ -44,7 +44,8 @@ export class GameScene extends Phaser.Scene {
     // Preload obstacle assets
     Obstacle.preloadAssets(this);
     
-    // Duck will handle its own preloading
+    // Load duck image
+    this.load.image('duck', '/assets/duck.png');
   }
 
   create() {

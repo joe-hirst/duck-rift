@@ -1,7 +1,7 @@
 {
   "name": "duck-rift",
   "version": "1.0.0",
-  "description": "A Temple Run style game with a duck on a raft",
+  "description": "A Endless runner style game with a duck on a raft",
   "main": "dist/bundle.js",
   "scripts": {
     "copy-assets": "mkdir -p dist/assets && cp -r src/assets/* dist/assets/ && cp src/index.html dist/",

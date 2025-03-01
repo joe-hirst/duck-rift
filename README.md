@@ -1,10 +1,10 @@
 # Duck Rift
 
-A Temple Run style game created for a 48-hour game jam with the theme "Rift". Control a duck on a raft navigating down a river, avoiding obstacles along the way.
+A Endless runner style game created for a Duck Sauce Jam 2025, 48-hour game jam with the theme "Rift". Control a duck on a raft navigating down a river, avoiding obstacles along the way.
 
 ## Game Concept
 
-- Temple Run style endless runner game
+- Endless style runner game
 - The player controls a duck on a raft going down a river
 - The player must avoid rocks and obstacles in the river
 - The game gets progressively faster and more difficult

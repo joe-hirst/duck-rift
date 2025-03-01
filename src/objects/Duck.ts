@@ -3,7 +3,7 @@ import { GAME_WIDTH } from "../config";
 
 export class Duck extends Phaser.Physics.Arcade.Sprite {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-  private duckSize: number = 60;
+  private duckSize: number = 62.5;
   private movementSpeed: number = 250;
   private riverBounds: { left: number; right: number } = {
     left: 60,

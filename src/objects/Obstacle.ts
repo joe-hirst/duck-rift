@@ -12,7 +12,7 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
   constructor(
     scene: Phaser.Scene,
     x: number,
-    type: ObstacleType = ObstacleType.ROCK,
+    type: ObstacleType = ObstacleType.ROCK
   ) {
     // We'll start with a placeholder texture and update it in create()
     super(scene, x, 0, "obstacle");
@@ -24,23 +24,14 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
 
     // Set the initial position off-screen at the top
     this.setPosition(x, -50);
+    //this.setScale(2);
 
     // Velocity will be set in the GameScene
   }
 
   static preloadAssets(scene: Phaser.Scene) {
-    // We'll add real assets later, for now create placeholders
-
-    // Create rock placeholder
-    const rockGraphics = scene.add.graphics();
-    rockGraphics.fillStyle(0x888888, 1); // Gray color for rocks
-    rockGraphics.fillRect(0, 0, 60, 50);
-    // Add some texture to the rock
-    rockGraphics.lineStyle(1, 0x666666, 1);
-    rockGraphics.strokeCircle(15, 15, 10);
-    rockGraphics.strokeCircle(40, 30, 12);
-    rockGraphics.generateTexture("rock", 60, 50);
-    rockGraphics.clear();
+    // Load rock image from assets
+    scene.load.image("rock", "/assets/rock.svg");
 
     // Create log placeholder
     const logGraphics = scene.add.graphics();
@@ -62,8 +53,10 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
     // Set texture and size based on obstacle type
     if (this.obstacleType === ObstacleType.ROCK) {
       this.setTexture("rock");
+      // Set appropriate size for rock.svg
+      this.setDisplaySize(110, 85);
       if (this.body) {
-        this.body.setSize(50, 40);
+        this.body.setSize(80, 60);
       }
       // Add some random rotation to the rock
       this.setRotation(Phaser.Math.FloatBetween(0, Math.PI));

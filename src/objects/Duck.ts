@@ -21,8 +21,8 @@ export class Duck extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
     if (this.body) {
       // Make hitbox a bit smaller than visual size for better gameplay feel
-      this.body.setSize(this.duckSize * 5, this.duckSize * 4);
-      this.body.setOffset(this.duckSize * 1, this.duckSize * 1);
+      this.body.setSize(this.duckSize * 6.25, this.duckSize * 4);
+      this.body.setOffset(this.duckSize * 0, this.duckSize * 1);
     }
 
     // Set up input

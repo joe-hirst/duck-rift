@@ -9,7 +9,7 @@ export class Jam extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this);
 
     // Scale down the jam image to a reasonable size
-    this.setScale(0.1);
+    this.setScale(0.105);
     this.setPosition(x, -50);
   }
 

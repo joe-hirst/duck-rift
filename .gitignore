@@ -4,6 +4,7 @@ node_modules/
 
 # Build files
 dist/
+dist.zip
 
 # IDE files
 .vscode/

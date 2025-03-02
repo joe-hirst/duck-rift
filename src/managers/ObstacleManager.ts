@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { Duck } from "../objects/Duck";
 import { Obstacle, ObstacleType } from "../objects/Obstacle";
 import { GAME_SPEED } from "../config";
+import { PauseManager } from "./PauseManager";
 
 export class ObstacleManager {
   private scene: Phaser.Scene;
@@ -98,19 +99,34 @@ export class ObstacleManager {
     if (this.difficultyLevel >= 2 && Math.random() < 0.3) {
       const obstacleCount = Phaser.Math.Between(1, this.difficultyLevel - 1);
       for (let i = 0; i < obstacleCount; i++) {
-        // Add a small delay between spawns
-        this.scene.time.delayedCall(Phaser.Math.Between(100, 300), () => {
-          if (this.gameOver) return;
+        // Add a small delay between spawns with a timer that can be paused
+        const delayedSpawnTimer = this.scene.time.addEvent({
+          delay: Phaser.Math.Between(100, 300),
+          callback: () => {
+            if (this.gameOver) return;
 
-          const offsetX = Phaser.Math.Between(
-            leftEdge + 30,
-            leftEdge + riverbedWidth - 30,
-          );
-          const offsetType =
-            Math.random() < 0.3 ? ObstacleType.LOG : ObstacleType.ROCK;
+            const offsetX = Phaser.Math.Between(
+              leftEdge + 30,
+              leftEdge + riverbedWidth - 30,
+            );
+            const offsetType =
+              Math.random() < 0.3 ? ObstacleType.LOG : ObstacleType.ROCK;
 
-          this.createSingleObstacle(offsetX, offsetType);
+            this.createSingleObstacle(offsetX, offsetType);
+          },
+          callbackScope: this,
         });
+
+        // Register this timer with the pause manager
+        if (this.scene.scene.key === "GameScene") {
+          // Access pause manager from GameScene
+          const gameScene = this.scene as Phaser.Scene & {
+            pauseManager?: PauseManager;
+          };
+          if (gameScene.pauseManager) {
+            gameScene.pauseManager.addTimer(delayedSpawnTimer);
+          }
+        }
       }
     }
   }

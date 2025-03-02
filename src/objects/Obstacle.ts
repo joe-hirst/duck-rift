@@ -12,7 +12,7 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
   constructor(
     scene: Phaser.Scene,
     x: number,
-    type: ObstacleType = ObstacleType.ROCK
+    type: ObstacleType = ObstacleType.ROCK,
   ) {
     // We'll start with a placeholder texture and update it in create()
     super(scene, x, 0, "obstacle");

@@ -1,4 +1,4 @@
-# Duck Rift
+# Duck Water Rifting
 
 A Endless runner style game created for a Duck Sauce Jam 2025, 48-hour game jam with the theme "Rift". Control a duck on a raft navigating down a river, avoiding obstacles along the way.
 

@@ -14,7 +14,7 @@ export class GameScene extends Phaser.Scene {
   private riverManager!: RiverManager;
   private obstacleManager!: ObstacleManager;
   private jamManager!: JamManager;
-  private pauseManager!: PauseManager;
+  public pauseManager!: PauseManager;
   private scoreManager!: ScoreManager;
   private gameOverManager!: GameOverManager;
   private bgMusic!: Phaser.Sound.BaseSound;

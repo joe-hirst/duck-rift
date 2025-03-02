@@ -125,7 +125,7 @@ export class GameScene extends Phaser.Scene {
 
   private collectJam(value: number): void {
     this.scoreManager.incrementJams(value);
-    this.sound.play("quack", { volume: 0.3 });
+    this.sound.play("quack", { volume: 0.1 });
   }
 
   private handleCollision(duck: Duck, _obstacle: Obstacle): void {

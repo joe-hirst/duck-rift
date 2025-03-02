@@ -79,7 +79,7 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
     } else if (this.obstacleType === ObstacleType.LOG) {
       this.setTexture("log");
       if (this.body) {
-        this.body.setSize(90, 20);
+        this.body.setSize(82, 18);
       }
       // Logs might be slightly rotated in the water
       this.setRotation(Phaser.Math.FloatBetween(-0.2, 0.2));

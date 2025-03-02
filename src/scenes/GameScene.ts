@@ -158,16 +158,49 @@ export class GameScene extends Phaser.Scene {
     // Reset game state
     this.gameOver = false;
 
-    // Reset jam manager
+    // Reset all managers
     this.jamManager.reset();
+    this.obstacleManager.reset();
+    this.riverManager.reset();
+    this.scoreManager.reset();
+    this.pauseManager.reset();
 
-    // Restart the scene
-    this.scene.restart();
+    // Clean up game over UI
+    this.gameOverManager.cleanup();
+
+    // Remove any remaining keyboard listeners
+    if (this.input && this.input.keyboard) {
+      this.input.keyboard.removeAllListeners("keydown-SPACE");
+      this.input.keyboard.removeAllListeners("keydown-M");
+      this.input.keyboard.removeAllListeners("keydown-L");
+    }
+
+    // Kill all tweens and timers
+    this.tweens.killAll();
+
+    // Start a fresh GameScene instead of restarting
+    // This ensures a cleaner state reset
+    this.scene.start("GameScene");
   }
 
   private goToMainMenu(): void {
     // Stop all sounds
     this.sound.stopAll();
+
+    // Clean up game over UI if present
+    if (this.gameOver) {
+      this.gameOverManager.cleanup();
+    }
+
+    // Remove keyboard listeners
+    if (this.input && this.input.keyboard) {
+      this.input.keyboard.removeAllListeners("keydown-SPACE");
+      this.input.keyboard.removeAllListeners("keydown-M");
+      this.input.keyboard.removeAllListeners("keydown-L");
+    }
+
+    // Kill all tweens and timers
+    this.tweens.killAll();
 
     // Go to main menu
     this.scene.start("MainMenuScene");

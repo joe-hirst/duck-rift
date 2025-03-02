@@ -12,7 +12,7 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
   constructor(
     scene: Phaser.Scene,
     x: number,
-    type: ObstacleType = ObstacleType.ROCK
+    type: ObstacleType = ObstacleType.ROCK,
   ) {
     // We'll start with a placeholder texture and update it in create()
     super(scene, x, 0, "obstacle");
@@ -38,7 +38,7 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
     logGraphics.fillStyle(0x9a7653, 1); // Lighter Minecraft oak wood base color
     logGraphics.fillRect(0, 0, 100, 30);
     // Add wood grain texture with darker Minecraft-like grain color
-    logGraphics.lineStyle(1, 0x7d5f3e, 0.8); 
+    logGraphics.lineStyle(1, 0x7d5f3e, 0.8);
     for (let i = 0; i < 100; i += 10) {
       logGraphics.beginPath();
       logGraphics.moveTo(i, 0);

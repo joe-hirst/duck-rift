@@ -27,7 +27,7 @@ export class ScoreManager {
         color: "#FFDC77",
         stroke: "#000",
         strokeThickness: 4,
-      }
+      },
     );
     this.jamText.setDepth(100); // Set high depth to ensure visibility
   }

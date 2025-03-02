@@ -33,12 +33,12 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
     // Load rock image from assets
     scene.load.image("rock", "/assets/rock.svg");
 
-    // Create log placeholder
+    // Create log placeholder with Minecraft oak wood colors
     const logGraphics = scene.add.graphics();
-    logGraphics.fillStyle(0x8b4513, 1); // Brown color for logs
+    logGraphics.fillStyle(0x9a7653, 1); // Lighter Minecraft oak wood base color
     logGraphics.fillRect(0, 0, 100, 30);
-    // Add some wood grain texture
-    logGraphics.lineStyle(1, 0x5c3317, 0.8);
+    // Add wood grain texture with darker Minecraft-like grain color
+    logGraphics.lineStyle(1, 0x7d5f3e, 0.8); 
     for (let i = 0; i < 100; i += 10) {
       logGraphics.beginPath();
       logGraphics.moveTo(i, 0);

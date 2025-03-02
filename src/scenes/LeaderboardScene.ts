@@ -70,7 +70,7 @@ export class LeaderboardScene extends Phaser.Scene {
         const scoreText = this.add.text(
           GAME_WIDTH / 2,
           yPos,
-          `${entry.score} jams`,
+          `${entry.score} Jams`,
           {
             fontSize: "36px",
             color,

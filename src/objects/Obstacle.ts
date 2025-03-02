@@ -55,11 +55,27 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
       this.setTexture("rock");
       // Set appropriate size for rock.svg
       this.setDisplaySize(110, 85);
-      if (this.body) {
-        this.body.setSize(80, 60);
-      }
       // Add some random rotation to the rock
-      this.setRotation(Phaser.Math.FloatBetween(0, Math.PI));
+      const rotation = Phaser.Math.FloatBetween(0, Math.PI / 2);
+      this.setRotation(rotation);
+      // Apply rotated hitbox for rocks
+      if (this.body && this.body instanceof Phaser.Physics.Arcade.Body) {
+        // Arcade Physics doesn't directly support rotated hitboxes, so use a workaround
+
+        // First set the hitbox to a square that covers both orientations
+        const maxDimension = Math.max(80, 60);
+        this.body.setSize(maxDimension, maxDimension, true);
+
+        // Then offset it to match the rotation visually
+        // For portrait orientation (rotation near 0 or PI)
+        if (Math.sin(rotation) < 0.5) {
+          this.body.setSize(80, 80, true);
+        }
+        // For landscape orientation (rotation near PI/2)
+        else {
+          this.body.setSize(80, 60, true);
+        }
+      }
     } else if (this.obstacleType === ObstacleType.LOG) {
       this.setTexture("log");
       if (this.body) {

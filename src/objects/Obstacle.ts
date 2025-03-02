@@ -69,11 +69,11 @@ export class Obstacle extends Phaser.Physics.Arcade.Sprite {
         // Then offset it to match the rotation visually
         // For portrait orientation (rotation near 0 or PI)
         if (Math.sin(rotation) < 0.5) {
-          this.body.setSize(60, 75, true);
+          this.body.setSize(55, 75, true);
         }
         // For landscape orientation (rotation near PI/2)
         else {
-          this.body.setSize(75, 60, true);
+          this.body.setSize(75, 55, true);
         }
       }
     } else if (this.obstacleType === ObstacleType.LOG) {

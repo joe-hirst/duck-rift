@@ -97,6 +97,9 @@ export class GameScene extends Phaser.Scene {
     this.pauseManager.addTimer(this.obstacleManager.getObstacleTimer());
     this.pauseManager.addTimer(this.obstacleManager.getDifficultyTimer());
     this.pauseManager.addTimer(this.jamManager.getJamTimer());
+    
+    // Enable physics debug mode to show hitboxes
+    this.physics.world.createDebugGraphic();
   }
 
   update() {

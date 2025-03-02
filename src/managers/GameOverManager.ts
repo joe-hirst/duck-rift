@@ -129,11 +129,20 @@ export class GameOverManager {
   }
 
   cleanup(): void {
+    // Destroy all game over UI elements
     if (this.gameOverText) this.gameOverText.destroy();
     if (this.jamsCollectedText) this.jamsCollectedText.destroy();
     if (this.highScoreText) this.highScoreText.destroy();
     if (this.retryText) this.retryText.destroy();
     if (this.menuText) this.menuText.destroy();
     if (this.leaderboardText) this.leaderboardText.destroy();
+
+    // Clear references to destroyed objects
+    this.gameOverText = undefined as unknown as Phaser.GameObjects.Text;
+    this.jamsCollectedText = undefined as unknown as Phaser.GameObjects.Text;
+    this.highScoreText = undefined as unknown as Phaser.GameObjects.Text;
+    this.retryText = undefined as unknown as Phaser.GameObjects.Text;
+    this.menuText = undefined as unknown as Phaser.GameObjects.Text;
+    this.leaderboardText = undefined as unknown as Phaser.GameObjects.Text;
   }
 }

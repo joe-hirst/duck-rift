@@ -43,7 +43,7 @@ export class RiverManager {
       GAME_HEIGHT / 2,
       GAME_WIDTH,
       GAME_HEIGHT,
-      "river"
+      "river",
     );
 
     // Create river banks
@@ -56,7 +56,7 @@ export class RiverManager {
       GAME_HEIGHT / 2,
       bankWidth,
       GAME_HEIGHT,
-      bankColor
+      bankColor,
     );
 
     // Right bank
@@ -65,7 +65,7 @@ export class RiverManager {
       GAME_HEIGHT / 2,
       bankWidth,
       GAME_HEIGHT,
-      bankColor
+      bankColor,
     );
 
     this.riverBanks = { left: leftBank, right: rightBank };

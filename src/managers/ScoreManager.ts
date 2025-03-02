@@ -13,13 +13,13 @@ export class ScoreManager {
   create(): void {
     // Setup jam display
     this.jamImage = this.scene.add.image(16, 32, "jam-word");
-    this.jamImage.setOrigin(-0.55, 0);
-    this.jamImage.setScale(0.032);
+    this.jamImage.setOrigin(-0.58, 0);
+    this.jamImage.setScale(0.033);
     this.jamImage.setDepth(100);
 
     // Add counter for jams
     this.jamText = this.scene.add.text(
-      this.jamImage.displayWidth + 50,
+      this.jamImage.displayWidth + 56,
       32,
       ": 0",
       {

@@ -83,7 +83,7 @@ export class MainMenuScene extends Phaser.Scene {
 
     // Add themed background
     const bg = this.add.graphics();
-    bg.fillGradientStyle(0x4488cc, 0x4488cc, 0x336699, 0x336699, 1);
+    bg.fillGradientStyle(0x5fbedf, 0x5fbedf, 0x4488cc, 0x4488cc, 1);
     bg.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
     bg.setDepth(-1);
 

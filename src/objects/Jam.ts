@@ -9,12 +9,12 @@ export class Jam extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this);
 
     // Scale down the jam image to a reasonable size
-    this.setScale(0.32);
+    this.setScale(0.1);
     this.setPosition(x, -50);
   }
 
   static preloadAssets(scene: Phaser.Scene) {
-    scene.load.image("jam", "/assets/jam.svg");
+    scene.load.image("jam", "/assets/jam.webp");
   }
 
   create() {
